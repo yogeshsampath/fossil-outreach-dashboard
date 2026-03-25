@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fossil Weekly Outreach — Email Generator (Page 4)</title>
+
+<style>
+  :root{
+    --text:#f5f1ea;
+    --muted:#c8c1b6;
+    --brass:#c8a45a;
+    --good:#2db37a;
+    --warn:#d6a14a;
+    --bad:#d14b4b;
+    --line: rgba(255,255,255,.12);
+    --shadow: 0 20px 70px rgba(0,0,0,.60);
+    --r:18px;
+    --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--text);
+    background:
+      linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.72)),
+      url("./store-bg.PNG") center/cover no-repeat fixed;
+  }
+
+  .wrap{max-width:1320px;margin:0 auto;padding:18px}
+  .card{
+    background: rgba(18,18,22,.82);
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 16px;
+    background: rgba(0,0,0,.18);
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:34px;width:auto;filter:brightness(1.08)}
+  .brand .t{font-weight:1000;letter-spacing:.7px;text-transform:uppercase;font-size:13px}
+  .brand .s{color:var(--muted);font-size:12.5px;margin-top:2px}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+  .btn{
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-weight: 1000;
+    font-size: 13px;
+    user-select:none;
+    text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    white-space:nowrap;
+  }
+  .btn:hover{filter:brightness(1.08);border-color:rgba(200,164,90,.40)}
+  .btn.primary{
+    background: linear-gradient(180deg, rgba(200,164,90,.96), rgba(177,138,68,.92));
+    border-color: rgba(200,164,90,.65);
+    color:#0b0b0c;
+  }
+
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: var(--muted);
+    padding:8px 12px;border-radius:999px;font-size:13px;
+  }
+  .pill b{color:var(--text)}
+  .dot{width:10px;height:10px;border-radius:999px;background:var(--muted)}
+  .dot.good{background:var(--good)}
+  .dot.warn{background:var(--warn)}
+  .dot.bad{background:var(--bad)}
+  .dot.brass{background:var(--brass)}
+
+  .content{
+    padding:16px;
+    display:grid;
+    grid-template-columns: 420px 1fr;
+    gap:14px;
+  }
+  @media (max-width: 1020px){
+    .content{grid-template-columns:1fr}
+  }
+
+  .panel{
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.10);
+    background: rgba(0,0,0,.20);
+    box-shadow: 0 18px 55px rgba(0,0,0,.22);
+    overflow:hidden;
+  }
+  .panelHead{
+    padding:14px 14px 10px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    background: rgba(0,0,0,.14);
+  }
+  .panelHead h2{
+    margin:0;
+    font-size:14px;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  .panelHead .meta{
+    font-family:var(--mono);
+    font-size:12px;
+    color:rgba(245,241,234,.75);
+    white-space:nowrap;
+  }
+  .panelBody{padding:14px}
+
+  .field{margin-bottom:12px}
+  .field label{
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:6px;
+    font-weight:900;
+  }
+
+  input, select, textarea{
+    width:100%;
+    padding:12px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.25);
+    color: var(--text);
+    outline:none;
+    font-size:14px;
+  }
+  input:focus, select:focus, textarea:focus{
+    border-color: rgba(200,164,90,.60);
+    box-shadow: 0 0 0 4px rgba(200,164,90,.18);
+  }
+
+  textarea{
+    min-height:560px;
+    resize:vertical;
+    line-height:1.55;
+  }
+
+  .statGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .stat{
+    border:1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.05);
+    border-radius:16px;
+    padding:14px;
+  }
+  .stat .lab{
+    color:var(--muted);
+    font-size:12px;
+    font-weight:900;
+  }
+  .stat .val{
+    font-size:24px;
+    font-weight:1200;
+    margin-top:8px;
+    font-family:var(--mono);
+  }
+
+  .statusBox{
+    margin-top:12px;
+    border-radius:16px;
+    padding:14px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05);
+  }
+  .statusBox.good{border-color:rgba(45,179,122,.38);background:rgba(45,179,122,.10)}
+  .statusBox.warn{border-color:rgba(214,161,74,.38);background:rgba(214,161,74,.10)}
+  .statusBox.bad{border-color:rgba(209,75,75,.38);background:rgba(209,75,75,.10)}
+
+  .statusTitle{
+    font-weight:1100;
+    font-size:15px;
+    margin-bottom:6px;
+  }
+  .statusSub{
+    color:rgba(245,241,234,.82);
+    font-size:13px;
+    line-height:1.45;
+  }
+
+  .btnRow{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:12px;
+  }
+
+  .hint{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+    margin-top:8px;
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <div class="topbar">
+      <div class="brand">
+        <img src="./fossil-logo.png" alt="Fossil" />
+        <div>
+          <div class="t">Weekly Outreach — Email Generator</div>
+          <div class="s">Page 4 • Auto email from saved weekly results</div>
+        </div>
+      </div>
+
+      <div class="actions" id="nav">
+        <span class="pill"><span class="dot brass"></span>Goal: <b id="uiGoal">6.4%</b></span>
+        <span class="pill"><span class="dot" id="uiStatusDot"></span>Status: <b id="uiStatus">—</b></span>
+
+        <a class="btn" href="./index.html">Page 1</a>
+        <a class="btn" href="./sheet.html">Page 2</a>
+        <a class="btn" href="./leaderboard.html">Page 3</a>
+        <a class="btn primary" href="./email.html">Page 4</a>
+        <a class="btn" href="./print.html">Print</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="panel">
+        <div class="panelHead">
+          <h2>Email Controls</h2>
+          <div class="meta" id="wkMeta">—</div>
+        </div>
+
+        <div class="panelBody">
+          <div class="field">
+            <label>Year</label>
+            <select id="inYear"></select>
+          </div>
+
+          <div class="field">
+            <label>Week</label>
+            <select id="inWeek"></select>
+          </div>
+
+          <div class="field">
+            <label>Email subject</label>
+            <input id="inSubject" placeholder="Week 4 Outreach Update" />
+          </div>
+
+          <div class="field">
+            <label>Manager sign-off</label>
+            <input id="inSign" placeholder="Thank you all — let’s carry this forward into next week." />
+          </div>
+
+          <div class="statGrid">
+            <div class="stat">
+              <div class="lab">Traffic</div>
+              <div class="val" id="sTraffic">0</div>
+            </div>
+            <div class="stat">
+              <div class="lab">Outreach</div>
+              <div class="val" id="sOutreach">0</div>
+            </div>
+            <div class="stat">
+              <div class="lab">Outreach %</div>
+              <div class="val" id="sPct">0.0%</div>
+            </div>
+            <div class="stat">
+              <div class="lab">Responses</div>
+              <div class="val" id="sResp">0</div>
+            </div>
+          </div>
+          <div id="statusBox" class="statusBox">
+            <div class="statusTitle" id="statusTitle">—</div>
+            <div class="statusSub" id="statusSub">—</div>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn primary" id="btnGenerate">Generate Email</button>
+            <button class="btn" id="btnCopy">Copy</button>
+            <button class="btn" id="btnRefresh">Refresh</button>
+          </div>
+
+          <div class="hint">
+AUTO-Email 
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="panel">
+        <div class="panelHead">
+          <h2>Generated Email</h2>
+          <div class="meta">Copy-ready</div>
+        </div>
+        <div class="panelBody">
+          <textarea id="outEmail" placeholder="Your weekly email will appear here..."></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ===== SAME STORAGE (CONNECTED TO YOUR OTHER PAGES) ===== */
+const ROOT = "fossil_weekly_v2";
+function weekKey(year, week){ return `${ROOT}::${year}::${week}`; }
+function loadAll(){ try { return JSON.parse(localStorage.getItem(ROOT) || "{}"); } catch { return {}; } }
+function getWeekData(year, week){ return loadAll()[weekKey(year,week)] || null; }
+
+/* ===== HELPERS ===== */
+function fmt1(n){ return (Number(n)||0).toFixed(1); }
+function fmtInt(n){ return String(Math.round(Number(n)||0)); }
+function pct(a,b){ return b ? (a/b)*100 : 0; }
+function cleanName(s){ return String(s || "").trim().replace(/\s+/g, " "); }
+function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+/* ===== DOM ===== */
+const inYear = document.getElementById("inYear");
+const inWeek = document.getElementById("inWeek");
+const inSubject = document.getElementById("inSubject");
+const inSign = document.getElementById("inSign");
+
+const uiGoal = document.getElementById("uiGoal");
+const uiStatus = document.getElementById("uiStatus");
+const uiStatusDot = document.getElementById("uiStatusDot");
+const wkMeta = document.getElementById("wkMeta");
+
+const sTraffic = document.getElementById("sTraffic");
+const sOutreach = document.getElementById("sOutreach");
+const sPct = document.getElementById("sPct");
+const sResp = document.getElementById("sResp");
+
+const statusBox = document.getElementById("statusBox");
+const statusTitle = document.getElementById("statusTitle");
+const statusSub = document.getElementById("statusSub");
+
+const outEmail = document.getElementById("outEmail");
+const btnGenerate = document.getElementById("btnGenerate");
+const btnCopy = document.getElementById("btnCopy");
+const btnRefresh = document.getElementById("btnRefresh");
+function buildYearWeek(){
+  const nowY = new Date().getFullYear();
+  const years = [nowY-1, nowY, nowY+1, nowY+2];
+  inYear.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join("");
+  const weeks = Array.from({length:60}, (_,i)=>i+1);
+  inWeek.innerHTML = weeks.map(w=>`<option value="${w}">${w}</option>`).join("");
+}
+
+function getWeekMetrics(year, week){
+  const data = getWeekData(year, week) || {};
+  const nums = data.numbers || [];
+
+  const traffic = nums.reduce((s,n)=>s+(Number(n.traffic)||0),0);
+  const outreach = nums.reduce((s,n)=>s+(Number(n.outreach)||0),0);
+  const responses = nums.reduce((s,n)=>s+(Number(n.resp)||0),0);
+  const outreachPct = pct(outreach, traffic);
+  const goal = Number(data.goal ?? 6.4) || 6.4;
+
+  const top1 = cleanName(data.top1 || "");
+  const top2 = cleanName(data.top2 || "");
+  const top3 = cleanName(data.top3 || "");
+
+  return {
+    data,
+    traffic,
+    outreach,
+    responses,
+    outreachPct,
+    goal,
+    top1,
+    top2,
+    top3
+  };
+}
+
+function classifyResult(outreachPct, goal){
+  if(outreachPct >= goal + 2) return "good";
+  if(outreachPct >= goal - 1) return "ok";
+  return "bad";
+}
+
+function getTopText(top1, top2, top3){
+  const arr = [top1, top2, top3].filter(Boolean);
+  if(arr.length === 0) return "the team";
+  if(arr.length === 1) return arr[0];
+  if(arr.length === 2) return `${arr[0]} and ${arr[1]}`;
+  return `${arr[0]}, ${arr[1]}, and ${arr[2]}`;
+}
+
+function renderSummary(){
+  const year = Number(inYear.value);
+  const week = Number(inWeek.value);
+  const m = getWeekMetrics(year, week);
+  const result = classifyResult(m.outreachPct, m.goal);
+
+  wkMeta.textContent = `Week ${week} • ${year}`;
+  uiGoal.textContent = `${fmt1(m.goal)}%`;
+
+  sTraffic.textContent = fmtInt(m.traffic);
+  sOutreach.textContent = fmtInt(m.outreach);
+  sPct.textContent = `${fmt1(m.outreachPct)}%`;
+  sResp.textContent = fmtInt(m.responses);
+
+  statusBox.classList.remove("good","warn","bad");
+
+  if(result === "good"){
+    uiStatus.textContent = "Good";
+    uiStatusDot.className = "dot good";
+    statusBox.classList.add("good");
+    statusTitle.textContent = "Strong Week";
+    statusSub.textContent = "Outreach is clearly above goal. Email tone should be appreciative, confident, and momentum-focused.";
+  } else if(result === "ok"){
+    uiStatus.textContent = "OK";
+    uiStatusDot.className = "dot warn";
+    statusBox.classList.add("warn");
+    statusTitle.textContent = "Stable / Near Goal";
+    statusSub.textContent = "Performance is close to target. Email tone should be balanced, encouraging, professional, and improvement-focused.";
+  } else {
+    uiStatus.textContent = "Needs Push";
+    uiStatusDot.className = "dot bad";
+    statusBox.classList.add("bad");
+    statusTitle.textContent = "Below Goal";
+    statusSub.textContent = "Outreach is below expectation. Email tone should stay professional, motivating, and accountability-focused without sounding negative.";
+  }
+
+  if(!inSubject.value.trim()){
+    inSubject.value = `Week ${week} Outreach Update`;
+  }
+  if(!inSign.value.trim()){
+    inSign.value = "Thank you all — let’s carry this forward into next week.";
+  }
+}
+function goodTemplates(ctx){
+  return [
+`Hi Team,
+
+Appreciate the strong effort everyone put into client outreach during Week ${ctx.week}. The consistency across the team is clearly reflected in this week’s results.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Congratulations to ${ctx.topText} for leading the way with the highest outreach activity this week. Strong commitment and excellent execution — well done.
+
+📊 Week ${ctx.week} Store Summary
+
+During Week ${ctx.week}, the store recorded ${ctx.traffic} customer traffic, with ${ctx.outreach} outreach messages completed.
+
+This results in an overall outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses received.
+
+These numbers reflect strong progress and meaningful customer engagement. Outreach levels are well above expectations, and the response rate confirms that conversations are being handled effectively. The focus now is on maintaining this standard consistently across all shifts.
+
+🎯 Focus Areas for the Coming Week
+
+Please keep the following in mind during your shifts:
+
+Distribute outreach activity evenly throughout the day
+
+Maintain consistent follow-ups to support active conversations
+
+Continue balancing both outreach quantity and conversation quality
+
+Support strong participation across the full team
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Thank you for the excellent effort shown during Week ${ctx.week}. The discipline and consistency in outreach are beginning to translate into very strong weekly performance.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Well done to ${ctx.topText} for setting the pace this week through strong outreach activity and execution.
+
+📊 Week ${ctx.week} Store Summary
+
+Store traffic for Week ${ctx.week} was ${ctx.traffic}, and the team completed ${ctx.outreach} outreach messages.
+
+That brings our weekly outreach penetration to ${ctx.outreachPct}%, with ${ctx.responses} customer responses received.
+
+This is a strong result and a positive reflection of both effort and follow-through. Outreach remains above target, and the level of customer response shows that the team is driving meaningful engagement rather than just activity.
+
+🎯 Focus Areas for the Coming Week
+
+Stay consistent regardless of traffic level
+
+Continue timely and intentional follow-ups
+
+Maintain outreach quality across all shifts
+
+Keep the momentum strong through steady daily execution
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Great job during Week ${ctx.week}. This week’s outreach results reflect strong ownership, good consistency, and meaningful engagement across the store.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Congratulations to ${ctx.topText} for leading this week’s outreach efforts.
+
+📊 Week ${ctx.week} Store Summary
+
+During Week ${ctx.week}, the store saw ${ctx.traffic} customer traffic and completed ${ctx.outreach} outreach messages.
+
+This resulted in an outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses.
+
+Overall, this is a very positive result. Outreach is performing above expectations, and the response volume indicates that conversations are being managed effectively. This level of performance sets a strong standard for the team.
+
+🎯 Focus Areas for the Coming Week
+
+Keep outreach spread throughout the full shift
+
+Continue quality conversations and strong follow-up habits
+
+Maintain team-wide participation and consistency
+
+Build on this momentum without relying only on peak periods
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Appreciate the focus and consistency shown during Week ${ctx.week}. The effort being put into outreach is clearly visible in this week’s numbers.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+A big shout-out to ${ctx.topText} for leading outreach activity this week. Strong work and great consistency.
+
+📊 Week ${ctx.week} Store Summary
+
+Week ${ctx.week} closed with ${ctx.traffic} store traffic and ${ctx.outreach} outreach messages completed.
+
+This resulted in an outreach penetration of ${ctx.outreachPct}%, with ${ctx.responses} customer responses received.
+
+These are strong results. Outreach performance is well above target, and the customer response count confirms that activity is translating into real engagement. This is exactly the kind of consistency we want to keep building on.
+
+🎯 Focus Areas for the Coming Week
+
+Maintain outreach throughout all trading periods
+
+Continue active and timely follow-ups
+
+Keep quality conversations at the center of outreach
+
+Encourage every shift to contribute consistently
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Thank you all for the strong effort shown during Week ${ctx.week}. The consistency we are building is starting to produce very solid weekly performance.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Congratulations to ${ctx.topText} for leading the store in outreach activity this week.
+
+📊 Week ${ctx.week} Store Summary
+
+In Week ${ctx.week}, the store recorded ${ctx.traffic} traffic and completed ${ctx.outreach} outreach messages.
+
+This gives us a weekly outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses.
+
+This is a strong outcome and a clear sign of progress. Outreach levels are exceeding expectations, and the response numbers confirm that the team is creating valuable customer interaction through consistent outreach efforts.
+
+🎯 Focus Areas for the Coming Week
+
+Sustain strong daily outreach habits
+
+Continue outreach even during slower traffic periods
+
+Keep follow-up activity timely and intentional
+
+Drive balanced participation across the team
+
+${ctx.sign}`
+  ];
+}
+
+function okTemplates(ctx){
+  return [
+`Hi Team,
+
+Appreciate the effort everyone put into client outreach during Week ${ctx.week}. There is good activity being built week over week, and this week shows a stable base we can continue improving from.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Congratulations to ${ctx.topText} for leading the way with the highest outreach activity this week.
+
+📊 Week ${ctx.week} Store Summary
+
+During Week ${ctx.week}, the store recorded ${ctx.traffic} customer traffic, with ${ctx.outreach} outreach messages completed.
+
+This results in an overall outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses received.
+
+These results are close to expectations and show good effort across the team. The opportunity now is to improve consistency, increase participation across all shifts, and push this foundation into a stronger overall result next week.
+
+🎯 Focus Areas for the Coming Week
+
+Distribute outreach activity more evenly through the day
+
+Complete outreach consistently regardless of store traffic
+
+Continue follow-ups to support customer engagement
+
+Strengthen balanced contribution across the full team
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Thank you for the effort shown during Week ${ctx.week}. This week reflects a reasonable level of outreach activity, and with some small improvements we can turn this into a stronger result.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Well done to ${ctx.topText} for leading the store in outreach this week.
+
+📊 Week ${ctx.week} Store Summary
+
+Week ${ctx.week} closed with ${ctx.traffic} customer traffic and ${ctx.outreach} outreach messages completed.
+
+That resulted in an outreach penetration of ${ctx.outreachPct}%, together with ${ctx.responses} customer responses received.
+
+Overall, the week shows visible effort and a good base to build from. We are close to target, but there is still room to improve consistency, daily discipline, and full-team participation in outreach activity.
+
+🎯 Focus Areas for the Coming Week
+
+Keep outreach steady across all shifts
+
+Avoid clustering outreach into short periods
+
+Maintain active follow-up conversations
+
+Push for stronger consistency from day to day
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Appreciate the continued effort during Week ${ctx.week}. The team is showing a steady level of outreach activity, and there are clear signs we are moving in the right direction.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Congratulations to ${ctx.topText} for leading this week’s outreach activity.
+
+📊 Week ${ctx.week} Store Summary
+
+During Week ${ctx.week}, the store saw ${ctx.traffic} traffic and completed ${ctx.outreach} outreach messages.
+
+This resulted in an outreach penetration of ${ctx.outreachPct}%, with ${ctx.responses} customer responses received.
+
+This is a stable result and shows that the team is putting in effort. The next step is improving consistency and scaling outreach more evenly so that performance does not depend only on certain shifts or peak periods.
+
+🎯 Focus Areas for the Coming Week
+
+Maintain outreach rhythm throughout the full day
+
+Follow up consistently with active conversations
+
+Increase team-wide participation
+
+Focus on steady daily execution
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Thank you all for the effort shown during Week ${ctx.week}. This week’s performance shows that the team is putting in work, and there is a solid platform here to improve further.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+A big shout-out to ${ctx.topText} for leading outreach activity this week.
+
+📊 Week ${ctx.week} Store Summary
+
+The store recorded ${ctx.traffic} customer traffic during Week ${ctx.week}, with ${ctx.outreach} outreach messages completed.
+
+This produced an outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses received.
+
+These numbers show a decent level of outreach activity. While we are near expectations, the opportunity now is to improve consistency across the week and convert more of our daily effort into stronger overall performance.
+
+🎯 Focus Areas for the Coming Week
+
+Increase outreach consistency regardless of traffic
+
+Spread activity evenly through all trading periods
+
+Continue timely follow-up communication
+
+Encourage balanced execution across the whole team
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Appreciate the effort that went into outreach during Week ${ctx.week}. The team has shown a stable level of activity, and we are close to where we want to be.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Well done to ${ctx.topText} for leading this week’s outreach activity.
+
+📊 Week ${ctx.week} Store Summary
+
+In Week ${ctx.week}, the store recorded ${ctx.traffic} customer traffic and completed ${ctx.outreach} outreach messages.
+
+This resulted in an outreach penetration of ${ctx.outreachPct}%, with ${ctx.responses} customer responses received.
+
+The week reflects visible effort and a good starting point. To move from stable to strong performance, we now need greater consistency, stronger participation across all days, and better distribution of outreach activity.
+
+🎯 Focus Areas for the Coming Week
+
+Maintain outreach during both busy and quiet periods
+
+Stay consistent with follow-up actions
+
+Improve daily execution discipline
+
+Build stronger participation across the team
+
+${ctx.sign}`
+  ];
+}
+function badTemplates(ctx){
+  return [
+`Hi Team,
+
+Thank you for the effort put into client outreach during Week ${ctx.week}. While there were positive contributions this week, the overall result shows that we still have a clear opportunity to improve.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Appreciation to ${ctx.topText} for leading outreach activity this week and helping keep momentum in place.
+
+📊 Week ${ctx.week} Store Summary
+
+During Week ${ctx.week}, the store recorded ${ctx.traffic} customer traffic, with ${ctx.outreach} outreach messages completed.
+
+This results in an overall outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses received.
+
+These numbers indicate that outreach execution was below expectation this week. The main opportunity now is improving consistency across all shifts, avoiding missed outreach opportunities, and increasing team-wide participation.
+
+🎯 Focus Areas for the Coming Week
+
+Complete outreach consistently throughout every shift
+
+Avoid relying only on peak traffic periods
+
+Prioritize timely follow-ups and active conversations
+
+Improve accountability and participation across the whole team
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Appreciate the effort shown during Week ${ctx.week}. Although there were some positive individual contributions, the overall weekly result shows we need stronger consistency in outreach execution.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Thank you to ${ctx.topText} for helping lead outreach activity this week.
+
+📊 Week ${ctx.week} Store Summary
+
+Week ${ctx.week} closed with ${ctx.traffic} customer traffic and ${ctx.outreach} outreach messages completed.
+
+That resulted in an outreach penetration of ${ctx.outreachPct}%, together with ${ctx.responses} customer responses received.
+
+This is below our target level and shows that outreach was not being completed consistently enough across the week. The focus now should be on daily discipline, stronger participation, and better distribution of activity across all shifts.
+
+🎯 Focus Areas for the Coming Week
+
+Ensure minimum outreach is completed every day
+
+Do not delay outreach until busy periods only
+
+Keep follow-ups active and timely
+
+Strengthen consistency across the full team
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Thank you for the work put in during Week ${ctx.week}. This week showed some effort and contribution, but the overall outreach result is still below where it needs to be.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Appreciation to ${ctx.topText} for leading this week’s outreach activity.
+
+📊 Week ${ctx.week} Store Summary
+
+During Week ${ctx.week}, the store recorded ${ctx.traffic} traffic and completed ${ctx.outreach} outreach messages.
+
+This resulted in an outreach penetration of ${ctx.outreachPct}%, with ${ctx.responses} customer responses received.
+
+The numbers show that there were missed opportunities during the week. We now need stronger consistency, more balanced team contribution, and better execution across all trading periods to improve the result moving forward.
+
+🎯 Focus Areas for the Coming Week
+
+Maintain outreach regardless of traffic level
+
+Spread outreach activity more evenly throughout the day
+
+Stay active with follow-ups
+
+Increase team-wide ownership and accountability
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Appreciate the effort put in during Week ${ctx.week}. While there were positive moments, the overall outreach outcome highlights the need for stronger and more consistent execution.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Thank you to ${ctx.topText} for helping lead outreach activity this week.
+
+📊 Week ${ctx.week} Store Summary
+
+The store recorded ${ctx.traffic} customer traffic during Week ${ctx.week}, with ${ctx.outreach} outreach messages completed.
+
+This produced an outreach penetration of ${ctx.outreachPct}%, along with ${ctx.responses} customer responses received.
+
+This week’s performance was below our expectation. The next step is making sure outreach is completed more consistently, participation is balanced across the team, and activity is sustained beyond only the busiest times of day.
+
+🎯 Focus Areas for the Coming Week
+
+Complete outreach with better daily discipline
+
+Avoid missed opportunities during quieter periods
+
+Maintain follow-up quality and responsiveness
+
+Build more consistent participation across all shifts
+
+${ctx.sign}`,
+
+`Hi Team,
+
+Thank you all for the effort during Week ${ctx.week}. Although there were positive contributions from individuals, the overall weekly result shows that we need to reset and improve consistency going forward.
+
+🏆 Week ${ctx.week} – Top Contributors
+
+Appreciation to ${ctx.topText} for leading this week’s outreach activity.
+
+📊 Week ${ctx.week} Store Summary
+
+In Week ${ctx.week}, the store recorded ${ctx.traffic} customer traffic and completed ${ctx.outreach} outreach messages.
+
+This resulted in an outreach penetration of ${ctx.outreachPct}%, with ${ctx.responses} customer responses received.
+
+This is below target and indicates that outreach execution was not consistent enough across the week. The opportunity now is to improve structure, maintain minimum outreach expectations, and create stronger team-wide participation.
+
+🎯 Focus Areas for the Coming Week
+
+Keep outreach active throughout the full shift
+
+Follow up consistently on ongoing conversations
+
+Reduce uneven participation across the team
+
+Focus on stronger daily accountability and execution
+
+${ctx.sign}`
+  ];
+}
+
+function generateEmail(){
+  const year = Number(inYear.value);
+  const week = Number(inWeek.value);
+  const m = getWeekMetrics(year, week);
+
+  const result = classifyResult(m.outreachPct, m.goal);
+  const topText = getTopText(m.top1, m.top2, m.top3);
+
+  const ctx = {
+    year,
+    week,
+    traffic: fmtInt(m.traffic),
+    outreach: fmtInt(m.outreach),
+    responses: fmtInt(m.responses),
+    outreachPct: fmt1(m.outreachPct),
+    goal: fmt1(m.goal),
+    topText,
+    sign: (inSign.value || "").trim() || "Thank you all — let’s carry this forward into next week."
+  };
+
+  let body = "";
+  if(result === "good") body = pick(goodTemplates(ctx));
+  else if(result === "ok") body = pick(okTemplates(ctx));
+  else body = pick(badTemplates(ctx));
+
+  const subject = (inSubject.value || `Week ${week} Outreach Update`).trim();
+  outEmail.value = `Subject: ${subject}
+
+${body}`;
+}
+
+function refreshAll(){
+  renderSummary();
+  generateEmail();
+}
+
+btnGenerate.addEventListener("click", generateEmail);
+btnRefresh.addEventListener("click", refreshAll);
+
+btnCopy.addEventListener("click", async ()=>{
+  try{
+    await navigator.clipboard.writeText(outEmail.value || "");
+    const old = btnCopy.textContent;
+    btnCopy.textContent = "Copied ✓";
+    setTimeout(()=> btnCopy.textContent = old, 900);
+  }catch{
+    alert("Copy failed. Please copy manually.");
+  }
+});
+
+inYear.addEventListener("change", refreshAll);
+inWeek.addEventListener("change", refreshAll);
+inSubject.addEventListener("input", generateEmail);
+inSign.addEventListener("input", generateEmail);
+window.addEventListener("focus", refreshAll);
+
+function init(){
+  buildYearWeek();
+  const now = new Date();
+  inYear.value = String(now.getFullYear());
+  inWeek.value = "4";
+  inSubject.value = `Week 4 Outreach Update`;
+  inSign.value = "Thank you all — let’s carry this forward into next week.";
+  refreshAll();
+}
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

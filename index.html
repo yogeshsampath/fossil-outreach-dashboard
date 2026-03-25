@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fossil 5976 — Luxury Watch Dial</title>
+
+<style>
+  :root{
+    --text:#f5f1ea;
+    --muted:#b9b2a7;
+
+    --dial:#0b0b0d;
+    --dial2:#101014;
+
+    --gold:#c8a45a;
+    --gold2:#b18a44;
+    --goldHi:#f2dfa8;
+
+    --red:#d14b4b;
+    --red2:#ff6b6b;
+
+    --line: rgba(255,255,255,.10);
+    --shadow: 0 22px 80px rgba(0,0,0,.65);
+
+    --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--text);
+    background:
+      radial-gradient(circle at 20% 10%, rgba(200,164,90,.14), transparent 55%),
+      radial-gradient(circle at 80% 70%, rgba(209,75,75,.10), transparent 55%),
+      linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.88)),
+      url("./store-bg.PNG") center/cover no-repeat fixed;
+  }
+
+  .wrap{max-width:1200px;margin:0 auto;padding:18px}
+  .card{
+    background: rgba(18,18,22,.78);
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 16px;
+    background: rgba(0,0,0,.22);
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .brand{display:flex;align-items:center;gap:12px;min-width:260px}
+  .brand img{height:34px;width:auto;filter:brightness(1.08)}
+  .brand .t{font-weight:1000;letter-spacing:.7px;text-transform:uppercase;font-size:13px}
+  .brand .s{color:var(--muted);font-size:12.5px;margin-top:2px}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: var(--muted);
+    padding:8px 12px;border-radius:999px;font-size:13px;
+  }
+  .pill b{color:var(--text)}
+  .dot{width:10px;height:10px;border-radius:999px;background:var(--muted)}
+  .dot.gold{background:var(--gold)}
+  .dot.good{background:#2db37a}
+  .dot.warn{background:#d6a14a}
+  .dot.bad{background:#d14b4b}
+
+  .btn{
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-weight: 1000;
+    font-size: 13px;
+    user-select:none;
+    text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn:hover{filter:brightness(1.08);border-color:rgba(200,164,90,.40)}
+  .btn.primary{
+    background: linear-gradient(180deg, rgba(200,164,90,.95), rgba(177,138,68,.92));
+    border-color: rgba(200,164,90,.65);
+    color:#0b0b0c;
+  }
+
+  .controls{
+    padding:14px 16px;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap:12px;
+  }
+  @media (max-width: 980px){ .controls{grid-template-columns:1fr} }
+
+  .field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px;font-weight:900}
+  input,select{
+    width:100%;
+    padding:12px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.25);
+    color: var(--text);
+    outline:none;
+    font-size:14px;
+  }
+  input:focus,select:focus{
+    border-color: rgba(200,164,90,.60);
+    box-shadow: 0 0 0 4px rgba(200,164,90,.18);
+  }
+
+  .stage{padding:18px 18px 22px}
+  .watchWrap{
+    position:relative;
+    width:min(980px, 100%);
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+  }
+  .watchSvg{position:absolute; inset:0; width:100%; height:100%; z-index:1}
+
+  .footerStrip{
+    display:flex;gap:10px;flex-wrap:wrap;
+    justify-content:center;
+    margin-top:14px;
+    color:rgba(245,241,234,.82);
+    font-family:var(--mono);
+    font-size:12.5px;
+  }
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
+    background: rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.10);
+    backdrop-filter: blur(6px);
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+
+    <div class="topbar">
+      <div class="brand">
+        <img src="./fossil-logo.PNG" alt="Fossil" />
+        <div>
+          <div class="t">Fossil 5976</div>
+          <div class="s">Outreach % dial • Goal status • Traffic + Replies</div>
+        </div>
+      </div>
+
+     <div class="actions" id="nav">
+  <span class="pill"><span class="dot gold"></span>Goal: <b id="uiGoal">6.4%</b></span>
+  <span class="pill"><span class="dot" id="uiStatusDot"></span>Status: <b id="uiStatus">—</b></span>
+
+  <a class="btn" href="./index.html">Page 1</a>
+  <a class="btn" href="./sheet.html">Page 2</a>
+  <a class="btn" href="./leaderboard.html">Page 3</a>
+ <a class="btn" href="./email.html">Page 4</a>
+  <a class="btn" href="./print.html">Print</a>
+</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label>Year</label>
+        <select id="inYear"></select>
+      </div>
+      <div class="field">
+        <label>Week #</label>
+        <select id="inWeek"></select>
+      </div>
+      <div class="field">
+        <label>Goal %</label>
+        <input id="inGoal" type="text" inputmode="decimal" value="6.4" />
+      </div>
+      <div style="display:flex;align-items:end;justify-content:flex-end;">
+        <button class="btn" id="btnRefresh">Refresh</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="watchWrap">
+        <svg class="watchSvg" viewBox="0 0 1000 1000" aria-hidden="true" shape-rendering="geometricPrecision">
+
+          <defs>
+            <!-- gold steel (strap) -->
+            <linearGradient id="strapGoldBase" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#fff3c4"/>
+              <stop offset="0.18" stop-color="#f2dfa8"/>
+              <stop offset="0.50" stop-color="#c8a45a"/>
+              <stop offset="0.82" stop-color="#b18a44"/>
+              <stop offset="1" stop-color="#fff3c4"/>
+            </linearGradient>
+
+            <linearGradient id="strapEdgeShade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(255,255,255,.22)"/>
+              <stop offset="0.35" stop-color="rgba(255,255,255,.06)"/>
+              <stop offset="1" stop-color="rgba(0,0,0,.22)"/>
+            </linearGradient>
+
+            <linearGradient id="strapGroove" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(0,0,0,.28)"/>
+              <stop offset="0.5" stop-color="rgba(0,0,0,.08)"/>
+              <stop offset="1" stop-color="rgba(0,0,0,.28)"/>
+            </linearGradient>
+
+            <!-- gold case -->
+            <linearGradient id="gCase" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff1c8"/>
+              <stop offset="0.22" stop-color="var(--goldHi)"/>
+              <stop offset="0.50" stop-color="var(--gold)"/>
+              <stop offset="0.78" stop-color="var(--gold2)"/>
+              <stop offset="1" stop-color="#fff1c8"/>
+            </linearGradient>
+
+            <!-- dial -->
+            <radialGradient id="gDial" cx="50%" cy="40%" r="70%">
+              <stop offset="0" stop-color="var(--dial2)"/>
+              <stop offset="0.60" stop-color="var(--dial)"/>
+              <stop offset="1" stop-color="#070708"/>
+            </radialGradient>
+
+            <radialGradient id="gVig" cx="50%" cy="50%" r="65%">
+              <stop offset="0.70" stop-color="rgba(0,0,0,0)"/>
+              <stop offset="1" stop-color="rgba(0,0,0,.35)"/>
+            </radialGradient>
+
+            <filter id="fShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="rgba(0,0,0,.55)"/>
+            </filter>
+
+            <filter id="fGlowRed" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- =========================
+               FS6093-STYLE STRAP (3-LINK) — closer to your photo
+               ========================= -->
+          <g id="strapFS6093" opacity="0.99">
+            <!-- TOP -->
+            <g>
+              <g transform="translate(0,0)">
+                <rect x="350" y="0" width="95" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="350" y="0" width="95" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="445" y="0" width="110" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="445" y="0" width="110" height="72" rx="22" fill="rgba(0,0,0,.06)"/>
+                <rect x="445" y="0" width="110" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".28"/>
+                <rect x="555" y="0" width="95" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="555" y="0" width="95" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="350" y="70" width="300" height="3" rx="2" fill="url(#strapGroove)" opacity=".35"/>
+              </g>
+
+              <g transform="translate(0,78)">
+                <rect x="342" y="0" width="102" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="342" y="0" width="102" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="444" y="0" width="112" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="444" y="0" width="112" height="72" rx="22" fill="rgba(0,0,0,.06)"/>
+                <rect x="444" y="0" width="112" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".28"/>
+                <rect x="556" y="0" width="102" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="556" y="0" width="102" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="342" y="70" width="316" height="3" rx="2" fill="url(#strapGroove)" opacity=".35"/>
+              </g>
+
+              <g transform="translate(0,156)">
+                <rect x="332" y="0" width="112" height="74" rx="24" fill="url(#strapGoldBase)"/>
+                <rect x="332" y="0" width="112" height="74" rx="24" fill="url(#strapEdgeShade)" opacity=".30"/>
+                <rect x="444" y="0" width="112" height="74" rx="24" fill="url(#strapGoldBase)"/>
+                <rect x="444" y="0" width="112" height="74" rx="24" fill="rgba(0,0,0,.06)"/>
+                <rect x="444" y="0" width="112" height="74" rx="24" fill="url(#strapEdgeShade)" opacity=".26"/>
+                <rect x="556" y="0" width="112" height="74" rx="24" fill="url(#strapGoldBase)"/>
+                <rect x="556" y="0" width="112" height="74" rx="24" fill="url(#strapEdgeShade)" opacity=".30"/>
+                <rect x="332" y="72" width="336" height="3" rx="2" fill="url(#strapGroove)" opacity=".35"/>
+              </g>
+
+              <!-- end-link to case -->
+              <g transform="translate(0,238)">
+                <rect x="315" y="0" width="370" height="96" rx="34" fill="url(#strapGoldBase)"/>
+                <rect x="315" y="0" width="370" height="96" rx="34" fill="url(#strapEdgeShade)" opacity=".26"/>
+                <rect x="446" y="10" width="108" height="76" rx="22" fill="rgba(0,0,0,.06)"/>
+                <rect x="315" y="92" width="370" height="4" rx="2" fill="url(#strapGroove)" opacity=".35"/>
+              </g>
+            </g>
+
+            <!-- BOTTOM -->
+            <g>
+              <g transform="translate(0,666)">
+                <rect x="315" y="0" width="370" height="96" rx="34" fill="url(#strapGoldBase)"/>
+                <rect x="315" y="0" width="370" height="96" rx="34" fill="url(#strapEdgeShade)" opacity=".26"/>
+                <rect x="446" y="10" width="108" height="76" rx="22" fill="rgba(0,0,0,.06)"/>
+                <rect x="315" y="0" width="370" height="4" rx="2" fill="url(#strapGroove)" opacity=".28"/>
+              </g>
+
+              <g transform="translate(0,768)">
+                <rect x="332" y="0" width="112" height="74" rx="24" fill="url(#strapGoldBase)"/>
+                <rect x="332" y="0" width="112" height="74" rx="24" fill="url(#strapEdgeShade)" opacity=".30"/>
+                <rect x="444" y="0" width="112" height="74" rx="24" fill="url(#strapGoldBase)"/>
+                <rect x="444" y="0" width="112" height="74" rx="24" fill="rgba(0,0,0,.06)"/>
+                <rect x="444" y="0" width="112" height="74" rx="24" fill="url(#strapEdgeShade)" opacity=".26"/>
+                <rect x="556" y="0" width="112" height="74" rx="24" fill="url(#strapGoldBase)"/>
+                <rect x="556" y="0" width="112" height="74" rx="24" fill="url(#strapEdgeShade)" opacity=".30"/>
+                <rect x="332" y="72" width="336" height="3" rx="2" fill="url(#strapGroove)" opacity=".35"/>
+              </g>
+
+              <g transform="translate(0,846)">
+                <rect x="342" y="0" width="102" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="342" y="0" width="102" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="444" y="0" width="112" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="444" y="0" width="112" height="72" rx="22" fill="rgba(0,0,0,.06)"/>
+                <rect x="444" y="0" width="112" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".28"/>
+                <rect x="556" y="0" width="102" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="556" y="0" width="102" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="342" y="70" width="316" height="3" rx="2" fill="url(#strapGroove)" opacity=".35"/>
+              </g>
+
+              <g transform="translate(0,924)">
+                <rect x="350" y="0" width="95" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="350" y="0" width="95" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+                <rect x="445" y="0" width="110" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="445" y="0" width="110" height="72" rx="22" fill="rgba(0,0,0,.06)"/>
+                <rect x="445" y="0" width="110" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".28"/>
+                <rect x="555" y="0" width="95" height="72" rx="22" fill="url(#strapGoldBase)"/>
+                <rect x="555" y="0" width="95" height="72" rx="22" fill="url(#strapEdgeShade)" opacity=".32"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- shadow -->
+          <circle cx="500" cy="520" r="432" fill="rgba(0,0,0,.35)" filter="url(#fShadow)"/>
+
+          <!-- case -->
+          <circle cx="500" cy="520" r="418" fill="url(#gCase)" opacity="0.98"/>
+          <circle cx="500" cy="520" r="405" fill="rgba(255,255,255,.10)" opacity=".12"/>
+
+          <!-- crown -->
+          <g>
+            <path d="M885 520 C885 475 920 475 920 520 C920 565 885 565 885 520 Z"
+                  fill="url(#gCase)"/>
+            <rect x="862" y="490" width="32" height="60" rx="14" fill="rgba(0,0,0,.25)"/>
+            <g opacity=".35">
+              <line x1="895" y1="492" x2="895" y2="548" stroke="rgba(0,0,0,.45)" stroke-width="2"/>
+              <line x1="902" y1="492" x2="902" y2="548" stroke="rgba(0,0,0,.45)" stroke-width="2"/>
+              <line x1="888" y1="492" x2="888" y2="548" stroke="rgba(0,0,0,.45)" stroke-width="2"/>
+            </g>
+          </g>
+
+          <!-- bezel lips -->
+          <circle cx="500" cy="520" r="392" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3" opacity=".25"/>
+          <circle cx="500" cy="520" r="378" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="3" opacity=".35"/>
+
+          <!-- dial -->
+          <circle cx="500" cy="520" r="350" fill="url(#gDial)"/>
+          <circle cx="500" cy="520" r="350" fill="url(#gVig)"/>
+          <circle cx="500" cy="520" r="350" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+
+          <!-- chapter ring -->
+          <circle cx="500" cy="520" r="324" fill="none" stroke="rgba(200,164,90,.32)" stroke-width="10"/>
+
+          <!-- indices + numbers -->
+          <g id="indices" stroke="rgba(200,164,90,.92)" stroke-linecap="round"></g>
+          <g id="numbers"></g>
+
+          <!-- needle -->
+          <g id="hands" transform="rotate(0 500 520)">
+            <line x1="500" y1="565" x2="500" y2="210" stroke="rgba(0,0,0,.65)" stroke-width="16" stroke-linecap="round"/>
+            <line x1="500" y1="572" x2="500" y2="210" stroke="rgba(200,164,90,1)" stroke-width="10" stroke-linecap="round"/>
+            <circle cx="500" cy="210" r="7" fill="rgba(242,223,168,1)"/>
+          </g>
+
+          <!-- center pin -->
+          <circle cx="500" cy="520" r="24" fill="rgba(0,0,0,.75)"/>
+          <circle cx="500" cy="520" r="14" fill="rgba(200,164,90,1)"/>
+
+          <!-- brand -->
+          <text x="500" y="402" text-anchor="middle"
+                fill="rgba(245,241,234,.24)"
+                font-family="system-ui"
+                font-size="18"
+                font-weight="900"
+                letter-spacing="4">FOSSIL 5976</text>
+
+          <!-- SUBDIAL 1: GOAL (Above/Below only) -->
+          <g id="subGoal">
+            <circle cx="380" cy="690" r="114" fill="rgba(0,0,0,.30)" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+            <circle cx="380" cy="690" r="100" fill="none" stroke="rgba(200,164,90,.30)" stroke-width="6"/>
+            <path id="goalArc" d="" fill="none" stroke="rgba(200,164,90,.95)" stroke-width="10" stroke-linecap="round"/>
+            <text x="380" y="662" text-anchor="middle" fill="rgba(245,241,234,.90)"
+                  font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="900">GOAL</text>
+            <text id="goalStateTxt" x="380" y="702" text-anchor="middle" fill="rgba(245,241,234,.92)"
+                  font-family="ui-monospace, Menlo, Consolas, monospace" font-size="30" font-weight="1200">—</text>
+          </g>
+
+          <!-- SUBDIAL 2: INSIGHTS (Traffic + Replies only) -->
+          <g id="subInsights">
+            <circle cx="620" cy="690" r="114" fill="rgba(0,0,0,.30)" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+            <circle cx="620" cy="690" r="100" fill="none" stroke="rgba(209,75,75,.40)" stroke-width="6"/>
+            <path id="insArc" d="" fill="none" stroke="rgba(209,75,75,.95)" stroke-width="10"
+                  stroke-linecap="round" filter="url(#fGlowRed)"/>
+            <text x="620" y="660" text-anchor="middle" fill="rgba(245,241,234,.92)"
+                  font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="900">INSIGHTS</text>
+            <text id="insLine1" x="620" y="700" text-anchor="middle" fill="rgba(255,107,107,.95)"
+                  font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="1000">Traffic 0</text>
+            <text id="insLine2" x="620" y="726" text-anchor="middle" fill="rgba(255,107,107,.88)"
+                  font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="1000">Replies 0</text>
+          </g>
+
+        </svg>
+      </div>
+
+      <div class="footerStrip">
+        <span class="chip" id="uiWeekChip">Week —</span>
+        <span class="chip" id="uiOutChip">Outreach 0</span>
+        <span class="chip" id="uiTraChip">Traffic 0</span>
+        <span class="chip" id="uiRepChip">Replies 0</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/** must match sheet.html */
+const ROOT = "fossil_weekly_v2";
+function weekKey(year, week){ return `${ROOT}::${year}::${week}`; }
+function loadAll(){ try { return JSON.parse(localStorage.getItem(ROOT) || "{}"); } catch { return {}; } }
+function getWeekData(year, week){ return loadAll()[weekKey(year,week)] || null; }
+
+function fmt1(n){ return (Number(n)||0).toFixed(1); }
+function fmtInt(n){ return String(Math.round(Number(n)||0)); }
+function pct(a,b){ return b ? (a/b)*100 : 0; }
+function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+
+const MAX_DIAL = 12;
+
+const inYear = document.getElementById("inYear");
+const inWeek = document.getElementById("inWeek");
+const inGoal = document.getElementById("inGoal");
+
+const uiGoal = document.getElementById("uiGoal");
+const uiStatus = document.getElementById("uiStatus");
+const uiStatusDot = document.getElementById("uiStatusDot");
+
+function onlyDec(el){
+  el.addEventListener("input", ()=>{ el.value = el.value.replace(/[^\d.]/g,"").replace(/(\..*)\./g,"$1"); });
+  el.addEventListener("focus", ()=>el.select());
+}
+onlyDec(inGoal);
+
+function buildYearWeek(){
+  const nowY = new Date().getFullYear();
+  const years = [nowY-1, nowY, nowY+1, nowY+2];
+  inYear.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join("");
+  const weeks = Array.from({length:60}, (_,i)=>i+1);
+  inWeek.innerHTML = weeks.map(w=>`<option value="${w}">${w}</option>`).join("");
+}
+
+function pctToDeg(p){
+  if(p <= 0) return 0;
+  return p * 30;   // 1% = 30°
+}
+
+function buildIndices(){
+  const g = document.getElementById("indices");
+  if(!g || g.dataset.built === "1") return;
+  g.dataset.built = "1";
+
+  const cx=500, cy=520;
+  const rOuter=318;
+  const rInnerThin=300;
+  const rInnerThick=286;
+
+  let s = "";
+  for(let i=0;i<60;i++){
+    const a = (i/60)*Math.PI*2 - Math.PI/2;
+    const x1 = cx + Math.cos(a)*rOuter;
+    const y1 = cy + Math.sin(a)*rOuter;
+
+    const thick = (i%5===0);
+    const x2 = cx + Math.cos(a)*(thick ? rInnerThick : rInnerThin);
+    const y2 = cy + Math.sin(a)*(thick ? rInnerThick : rInnerThin);
+
+    s += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"
+              stroke-width="${thick?8:3}" opacity="${thick?0.95:0.62}"></line>`;
+  }
+  g.innerHTML = s;
+}
+
+function buildNumbers(){
+  const g = document.getElementById("numbers");
+  if(!g || g.dataset.built === "1") return;
+  g.dataset.built = "1";
+
+  const cx=500, cy=520;
+  const r=255;
+
+  let s = "";
+  for(let n=1;n<=12;n++){
+    const deg = (n/12)*360;
+    const a = (deg*Math.PI/180) - Math.PI/2;
+    const x = cx + Math.cos(a)*r;
+    const y = cy + Math.sin(a)*r;
+
+    const isSix = (n===6);
+    s += `
+      <text x="${x.toFixed(2)}" y="${(y+10).toFixed(2)}"
+            text-anchor="middle"
+            font-family="ui-monospace, Menlo, Consolas, monospace"
+            font-size="${isSix?40:30}"
+            font-weight="${isSix?1200:900}"
+            fill="${isSix ? 'rgba(255,107,107,.98)' : 'rgba(200,164,90,.86)'}">
+        ${n}
+      </text>
+    `;
+  }
+  g.innerHTML = s;
+}
+
+function arcPath(cx, cy, r, startDeg, endDeg){
+  const toRad = d => (d*Math.PI/180);
+  const s = toRad(startDeg-90);
+  const e = toRad(endDeg-90);
+  const x1 = cx + Math.cos(s)*r, y1 = cy + Math.sin(s)*r;
+  const x2 = cx + Math.cos(e)*r, y2 = cy + Math.sin(e)*r;
+  const large = (endDeg-startDeg) % 360 > 180 ? 1 : 0;
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+}
+
+function renderDial({traffic,outreach,replies,weeklyPct,goalPct}){
+  uiGoal.textContent = `${fmt1(goalPct)}%`;
+
+  const status = weeklyPct >= goalPct ? "On Track" : (weeklyPct >= goalPct*0.8 ? "Close" : "Behind");
+  uiStatus.textContent = status;
+  uiStatusDot.className = "dot " + (status==="On Track" ? "good" : status==="Close" ? "warn" : "bad");
+
+  // needle
+  const deg = pctToDeg(weeklyPct);
+  document.getElementById("hands").setAttribute("transform", `rotate(${deg} 500 520)`);
+
+  // goal ABOVE/BELOW
+  document.getElementById("goalStateTxt").textContent = (weeklyPct - goalPct >= 0) ? "ABOVE" : "BELOW";
+
+  // goal arc
+  const ratio = goalPct ? clamp(weeklyPct/goalPct, 0, 1.6) : 0;
+  const sweep = clamp(ratio,0,1) * 300;
+  document.getElementById("goalArc").setAttribute("d", arcPath(380,690,86, 120, 120+sweep));
+
+  // insights
+  document.getElementById("insLine1").textContent = `Traffic ${fmtInt(traffic)}`;
+  document.getElementById("insLine2").textContent = `Replies ${fmtInt(replies)}`;
+
+  // red arc based on outreach volume
+  const outSweep = clamp(outreach/200, 0, 1) * 300;
+  document.getElementById("insArc").setAttribute("d", arcPath(620,690,86, 120, 120+outSweep));
+
+  // footer
+  document.getElementById("uiOutChip").textContent = `Outreach ${fmtInt(outreach)}`;
+  document.getElementById("uiTraChip").textContent = `Traffic ${fmtInt(traffic)}`;
+  document.getElementById("uiRepChip").textContent = `Replies ${fmtInt(replies)}`;
+}
+
+function loadJourney(){
+  const year = Number(inYear.value);
+  const week = Number(inWeek.value);
+  const manualGoal = Number((inGoal.value||"6.4").replace(/[^\d.]/g,"")) || 6.4;
+
+  const data = getWeekData(year, week);
+  const nums = (data?.numbers || []);
+
+  const traffic = nums.reduce((s,n)=>s+(Number(n.traffic)||0),0);
+  const outreach = nums.reduce((s,n)=>s+(Number(n.outreach)||0),0);
+  const replies = nums.reduce((s,n)=>s+(Number(n.resp)||0),0);
+
+  const weeklyPct = pct(outreach, traffic);
+  const goalPct = (data?.goal ?? manualGoal) || manualGoal;
+  inGoal.value = String(goalPct);
+
+  document.getElementById("uiWeekChip").textContent = `Week ${week} (${year})`;
+  renderDial({traffic,outreach,replies,weeklyPct,goalPct});
+}
+
+function init(){
+  buildYearWeek();
+  buildIndices();
+  buildNumbers();
+  const now = new Date();
+  inYear.value = String(now.getFullYear());
+  inWeek.value = "4";
+  loadJourney();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+document.getElementById("btnRefresh").addEventListener("click", loadJourney);
+inYear.addEventListener("change", loadJourney);
+inWeek.addEventListener("change", loadJourney);
+inGoal.addEventListener("input", loadJourney);
+window.addEventListener("focus", loadJourney);
+setInterval(loadJourney, 500);
+</script>
+<script>
+(function lockNav(){
+  const nav = document.getElementById("nav");
+  if(!nav) return;
+  nav.querySelectorAll("a.btn").forEach(a => a.setAttribute("target","_self"));
+})();
+</script>
+<script>
+(function lockNav(){
+  const nav = document.getElementById("nav");
+  if(!nav) return;
+  nav.querySelectorAll("a.btn").forEach(a => a.setAttribute("target","_self"));
+})();
+</script>
+</body>
+
