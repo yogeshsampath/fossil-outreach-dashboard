@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fossil Outreach Generator</title>
+
+<style>
+:root{
+  --panel: rgba(16,16,20,.84);
+  --text:#f5f1ea;
+  --muted:#c8c1b6;
+  --brass:#c8a45a;
+  --r:18px;
+}
+
+body{
+  margin:0;
+  font-family:system-ui;
+  color:var(--text);
+  background:url("./store-bg.PNG") center/cover no-repeat fixed;
+}
+
+.wrap{max-width:1300px;margin:auto;padding:20px}
+.card{background:var(--panel);border-radius:var(--r);padding:20px}
+
+h2{margin-bottom:10px}
+
+.section{margin-bottom:18px}
+
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+
+.products{
+  border:1px solid rgba(255,255,255,.1);
+  padding:10px;
+  border-radius:10px;
+}
+
+.products label{display:block;margin:3px 0;font-size:13px}
+
+.btn{
+  padding:8px 10px;
+  border-radius:10px;
+  background:#333;
+  color:#fff;
+  cursor:pointer;
+  margin:3px;
+}
+
+.btn.active{background:var(--brass);color:#000}
+
+textarea{
+  width:100%;
+  height:240px;
+  border-radius:12px;
+  background:#000;
+  color:#fff;
+  padding:15px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="card">
+
+<img src="./fossil-logo.png" height="40">
+<div style="margin-top:10px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;">
+
+  <a href="./index.html" class="btn">Page 1</a>
+  <a href="./sheet.html" class="btn">Page 2</a>
+  <a href="./leaderboard.html" class="btn">Page 3</a>
+  <a href="./email.html" class="btn">Page 4</a>
+  <a href="./page5.html" class="btn active">Page 5</a>
+
+</div>
+
+<h2>Outreach Generator</h2>
+
+<!-- OCCASION -->
+<div class="section">
+<select id="occasion">
+<option value="">No Occasion</option>
+<option>Canada Day</option>
+<option>BC Day</option>
+<option>Thanksgiving</option>
+<option>Christmas</option>
+<option>New Year</option>
+<option>Valentine’s Day</option>
+<option>Father’s Day</option>
+<option>Mother’s Day</option>
+<option>Black Friday</option>
+<option>Boxing Day</option>
+<option>Holiday Season</option>
+</select>
+</div>
+
+<!-- DISCOUNT -->
+<div class="section" id="discounts"></div>
+
+<!-- PRODUCTS -->
+<div class="grid">
+
+<div class="products">
+<b>WATCHES</b>
+<label><input type="checkbox" value="watch"> Watch</label>
+<label><input type="checkbox" value="leather watch"> Leather Watch</label>
+<label><input type="checkbox" value="gold watch"> Gold Watch</label>
+<label><input type="checkbox" value="automatic watch"> Automatic</label>
+<label><input type="checkbox" value="classic watch"> Classic</label>
+<label><input type="checkbox" value="bracelet watch"> Bracelet Watch</label>
+</div>
+
+<div class="products">
+<b>BAGS</b>
+<label><input type="checkbox" value="bag"> Bag</label>
+<label><input type="checkbox" value="backpack"> Backpack</label>
+<label><input type="checkbox" value="work bag"> Work Bag</label>
+<label><input type="checkbox" value="travel bag"> Travel Bag</label>
+<label><input type="checkbox" value="crossbody bag"> Crossbody</label>
+<label><input type="checkbox" value="tote bag"> Tote</label>
+<label><input type="checkbox" value="shoulder bag"> Shoulder</label>
+</div>
+
+<div class="products">
+<b>WALLETS</b>
+<label><input type="checkbox" value="wallet"> Wallet</label>
+<label><input type="checkbox" value="bifold wallet"> Bifold</label>
+<label><input type="checkbox" value="trifold wallet"> Trifold</label>
+<label><input type="checkbox" value="card case"> Card Case</label>
+</div>
+
+<div class="products">
+<b>JEWELLERY</b>
+<label><input type="checkbox" value="jewellery"> Jewellery</label>
+<label><input type="checkbox" value="bracelet"> Bracelet</label>
+<label><input type="checkbox" value="necklace"> Necklace</label>
+<label><input type="checkbox" value="ring"> Ring</label>
+</div>
+
+<div class="products">
+<b>ACCESSORIES</b>
+<label><input type="checkbox" value="belt"> Belt</label>
+<label><input type="checkbox" value="sunglasses"> Sunglasses</label>
+</div>
+
+<div class="products">
+<b>OPTIONS</b>
+<label><input type="checkbox" id="remoteCart"> Remote Cart</label>
+</div>
+
+</div>
+
+<br>
+
+<button onclick="generate()">Generate Message</button>
+<button onclick="copyMsg()">Copy</button>
+
+<textarea id="output"></textarea>
+
+</div>
+</div>
+
+<script>
+let selectedDiscount="";
+
+const discWrap=document.getElementById("discounts");
+[10,20,30,40,50,60,70,80].forEach(d=>{
+  const b=document.createElement("button");
+  b.textContent=d+"%";
+  b.className="btn";
+  b.onclick=()=>{
+    selectedDiscount=d;
+    document.querySelectorAll(".btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+  };
+  discWrap.appendChild(b);
+});
+
+function rand(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function generate(){
+
+  const occ=document.getElementById("occasion").value;
+  const remote=document.getElementById("remoteCart").checked;
+
+  const prods=[...document.querySelectorAll("input[type=checkbox]:checked")]
+    .map(x=>x.value)
+    .filter(x=>x);
+
+  let productText="";
+  if(prods.length===1) productText=prods[0];
+  else if(prods.length>1){
+    productText=prods.slice(0,-1).join(", ")+" and "+prods.slice(-1);
+  }
+
+  let msg="Hi X,\n\n";
+
+  const occMsg={
+    "Canada Day":[
+      "Happy Canada Day 🇨🇦 hope you're having a great one 🙂",
+      "Hope you're enjoying Canada Day 🇨🇦 today!"
+    ],
+    "BC Day":[
+      "Hope you're enjoying the BC Day long weekend 🌲🙂",
+      "Happy BC Day 🌲 enjoy the long weekend!"
+    ],
+    "Christmas":[
+      "Merry Christmas 🎄 hope you're having a beautiful time 🙂"
+    ]
+  };
+
+  if(occMsg[occ]) msg+=rand(occMsg[occ])+"\n\n";
+
+  if(productText){
+    msg+=rand([
+      `Just wanted to check in — how are you liking your ${productText} so far? 😊`,
+      `Hey! how’s your ${productText} been so far?`,
+      `Quick check — are you enjoying your ${productText}? 🙂`
+    ])+"\n\n";
+  }
+
+  msg+=rand([
+    "We just got some new arrivals in store that would go really well with your style.",
+    "We’ve received some fresh pieces that would complement your recent pick nicely."
+  ])+"\n\n";
+
+  if(selectedDiscount){
+    msg+=rand([
+      `We currently have ${selectedDiscount}% off on select styles.`,
+      `${selectedDiscount}% offer is running on some great pieces right now.`
+    ])+"\n\n";
+  }
+
+  if(remote){
+    msg+="Also just letting you know — you can shop directly through us using our remote cart.\n";
+    msg+="You can call us and we can place the order for you right away, and you’ll get outlet store pricing instead of full price.\n";
+    msg+="We can also ship it directly to your home 🙂\n\n";
+  }
+
+  msg+=rand([
+    "No pressure at all — just thought I’d share 🙂",
+    "Just thought I’d let you know — no rush at all 🙂"
+  ]);
+
+  document.getElementById("output").value=msg;
+}
+
+function copyMsg(){
+  const txt=document.getElementById("output");
+  txt.select();
+  document.execCommand("copy");
+}
+</script>
+
+</body>
+</html>
