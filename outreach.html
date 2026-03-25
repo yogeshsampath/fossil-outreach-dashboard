@@ -3,901 +3,261 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Fossil Weekly Outreach Sheet</title>
+<title>Fossil Outreach Generator</title>
 
 <style>
-  :root{
-    --panel: rgba(16,16,20,.84);
-    --panel2: rgba(22,22,28,.84);
-    --line: rgba(255,255,255,.12);
-    --text:#f5f1ea;
-    --muted:#c8c1b6;
+:root{
+  --panel: rgba(16,16,20,.84);
+  --text:#f5f1ea;
+  --muted:#c8c1b6;
+  --brass:#c8a45a;
+  --r:18px;
+}
 
-    --brass:#c8a45a;
-    --good:#2db37a;
-    --warn:#d6a14a;
-    --bad:#d14b4b;
+body{
+  margin:0;
+  font-family:system-ui;
+  color:var(--text);
+  background:url("./store-bg.PNG") center/cover no-repeat fixed;
+}
 
-    --r:18px;
-    --shadow: 0 20px 70px rgba(0,0,0,.60);
-    --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-  }
+.wrap{max-width:1300px;margin:auto;padding:20px}
+.card{background:var(--panel);border-radius:var(--r);padding:20px}
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:var(--sans);
-    color:var(--text);
-    background:
-      linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.55)),
-      url("./store-bg.PNG") center/cover no-repeat fixed;
-  }
+h2{margin-bottom:10px}
 
-  .wrap{max-width:1320px;margin:0 auto;padding:18px}
-  .card{
-    background: linear-gradient(180deg, var(--panel2), var(--panel));
-    border:1px solid var(--line);
-    border-radius:var(--r);
-    box-shadow:var(--shadow);
-  }
+.section{margin-bottom:18px}
 
-  .topbar{
-    display:flex;align-items:center;justify-content:space-between;gap:14px;
-    padding:14px 16px;
-  }
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:34px;width:auto;filter:brightness(1.08)}
-  .brand .t{font-weight:900;letter-spacing:.7px;text-transform:uppercase;font-size:13px}
-  .brand .s{color:var(--muted);font-size:12.5px;margin-top:2px}
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
 
-  .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
-  .pill{
-    display:inline-flex;align-items:center;gap:8px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(255,255,255,.06);
-    color: var(--muted);
-    padding:8px 12px;border-radius:999px;font-size:13px;
-  }
-  .pill b{color:var(--text)}
-  .dot{width:10px;height:10px;border-radius:999px;background:var(--muted)}
-  .dot.good{background:var(--good)}
-  .dot.warn{background:var(--warn)}
-  .dot.bad{background:var(--bad)}
-  .dot.brass{background:var(--brass)}
+.products{
+  border:1px solid rgba(255,255,255,.1);
+  padding:10px;
+  border-radius:10px;
+}
 
-  .btn{
-    cursor:pointer;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(255,255,255,.06);
-    color: var(--text);
-    border-radius: 14px;
-    padding: 10px 14px;
-    font-weight: 900;
-    font-size: 13px;
-    transition: transform .06s ease, filter .15s ease, border-color .15s ease;
-    user-select:none;
-  }
-  .btn:hover{filter:brightness(1.08);border-color:rgba(200,164,90,.40)}
-  .btn:active{transform:translateY(1px)}
-  .btn.primary{
-    background: linear-gradient(180deg, rgba(200,164,90,.95), rgba(177,138,68,.92));
-    border-color: rgba(200,164,90,.65);
-    color:#0b0b0c;
-  }
-  .btn.danger{background:rgba(209,75,75,.22);border-color:rgba(209,75,75,.45)}
+.products label{display:block;margin:3px 0;font-size:13px}
 
-  .grid{display:grid;grid-template-columns: 1.55fr 1fr; gap:14px; margin-top:14px}
-  @media (max-width: 1060px){ .grid{grid-template-columns:1fr} }
+.btn{
+  padding:8px 10px;
+  border-radius:10px;
+  background:#333;
+  color:#fff;
+  cursor:pointer;
+  margin:3px;
+}
 
-  .controls{
-    padding:14px 16px;
-    display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap:12px;
-  }
-  @media (max-width: 900px){ .controls{grid-template-columns:1fr} }
+.btn.active{background:var(--brass);color:#000}
 
-  .field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px;font-weight:800}
-
-  input,select,textarea{
-    width:100%;
-    padding:12px 12px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.25);
-    color: var(--text);
-    outline:none;
-    font-size:14px;
-  }
-  input:focus,select:focus,textarea:focus{
-    border-color: rgba(200,164,90,.60);
-    box-shadow: 0 0 0 4px rgba(200,164,90,.18);
-  }
-  textarea{min-height:110px;resize:vertical}
-
-  .paper{padding:16px}
-  .paperTitle{
-    display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;
-    margin-bottom:10px;
-  }
-  .paperTitle .h{font-weight:1000;font-size:15px;letter-spacing:.6px;text-transform:uppercase}
-  .paperTitle .sub{color:var(--muted);font-size:12px}
-  .rule{height:1px;background:rgba(255,255,255,.10);margin:10px 0 14px}
-
-  table{width:100%;border-collapse:separate;border-spacing:0 10px}
-  th{
-    color:var(--muted);
-    font-size:12px;
-    text-align:left;
-    padding:0 10px 6px;
-    font-weight:1000;
-  }
-
-  .rowBox{
-    background: rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:14px;
-    padding:10px;
-    margin-bottom:10px;
-  }
-
-  .cellGrid{
-    display:grid;
-    grid-template-columns: 150px 1fr 1fr 160px 1fr;
-    gap:10px;
-    align-items:center;
-  }
-  @media (max-width: 900px){
-    .cellGrid{grid-template-columns: 1fr 1fr}
-  }
-
-  .pct{
-    display:inline-flex;align-items:center;justify-content:center;
-    min-width:120px;
-    padding:10px 12px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.22);
-    font-weight:1000;
-    font-family:var(--mono);
-    font-size:14px;
-  }
-  .pct.good{border-color:rgba(45,179,122,.45);background:rgba(45,179,122,.14)}
-  .pct.warn{border-color:rgba(214,161,74,.45);background:rgba(214,161,74,.14)}
-  .pct.bad{border-color:rgba(209,75,75,.45);background:rgba(209,75,75,.14)}
-
-  .totalBar{
-    margin-top:10px;
-    display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-    padding:12px 12px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.10);
-    background: rgba(0,0,0,.18);
-  }
-  .totalBar .big{font-weight:1000;font-size:16px}
-  .totalBar .muted{color:var(--muted);font-size:12px}
-
-  .insights{padding:16px}
-  .insTitle{font-weight:1100;font-size:20px;letter-spacing:.2px;margin:0 0 10px}
-
-  .kpiGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .kpi{
-    border:1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.05);
-    border-radius:16px;
-    padding:16px;
-  }
-  .kpi .lab{color:var(--muted);font-size:12px;font-weight:900}
-  .kpi .val{font-size:26px;font-weight:1200;margin-top:8px;font-family:var(--mono)}
-  .kpi .hint{color:var(--muted);font-size:12px;margin-top:8px}
-
-  .callout{
-    margin-top:12px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.22);
-    padding:16px;
-  }
-
-  /* ✅ NEW: boxed callout rows (same text, just cleaner) */
-  .callout .miniGrid{display:grid;gap:10px}
-  .callout .miniItem{
-    display:grid;
-    grid-template-columns: 44px 1fr;
-    gap:12px;
-    align-items:center;
-    padding:14px 14px;
-    border-radius:16px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-  }
-  .callout .miniIcon{
-    width:44px;height:44px;border-radius:14px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:20px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-  }
-  .callout .miniText{
-    font-family:var(--mono);
-    font-weight:1100;
-    font-size:13.8px;
-    line-height:1.35;
-  }
-  .callout .c-pin{ border-color: rgba(200,164,90,.45); background: rgba(200,164,90,.10); }
-  .callout .c-pin .miniIcon{ background: rgba(200,164,90,.16); border-color: rgba(200,164,90,.35); }
-
-  .callout .c-bad{ border-color: rgba(209,75,75,.45); background: rgba(209,75,75,.10); }
-  .callout .c-bad .miniIcon{ background: rgba(209,75,75,.16); border-color: rgba(209,75,75,.35); }
-
-  .callout .c-warn{ border-color: rgba(214,161,74,.45); background: rgba(214,161,74,.10); }
-  .callout .c-warn .miniIcon{ background: rgba(214,161,74,.16); border-color: rgba(214,161,74,.35); }
-
-  .callout .c-good{ border-color: rgba(45,179,122,.45); background: rgba(45,179,122,.10); }
-  .callout .c-good .miniIcon{ background: rgba(45,179,122,.16); border-color: rgba(45,179,122,.35); }
-
-  .callout .c-info{ border-color: rgba(255,255,255,.16); background: rgba(0,0,0,.18); }
-  .callout .c-info .miniIcon{ background: rgba(0,0,0,.22); border-color: rgba(255,255,255,.14); }
-
-  .bigBox{
-    margin-top:12px;
-    padding:16px;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.05);
-  }
-  .summaryLines{
-    display:flex;flex-direction:column;gap:10px;
-    font-family:var(--mono);
-    font-size:13.5px;
-    line-height:1.4;
-  }
-  .summaryLines .row{
-    padding:12px 12px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.10);
-    background: rgba(0,0,0,.18);
-  }
-
-  .notes{padding:16px;margin-top:14px}
-  .notesGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width: 900px){ .notesGrid{grid-template-columns:1fr} }
-  .notes label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px;font-weight:900}
-
-  /* ===== PRINT: force ONE PAGE (landscape) ===== */
-  @media print{
-    @page { size: A4 landscape; margin: 8mm; }
-    body{background:#fff;color:#000}
-    .wrap{padding:0;max-width:none}
-    .card{box-shadow:none;background:#fff;border:1px solid #ccc}
-    .btn{display:none!important}
-    .actions .pill{display:inline-flex!important;border:1px solid #ddd;background:#f5f5f5;color:#111}
-    input,textarea,select{border:1px solid #999;background:#fff;color:#000}
-    .grid{grid-template-columns: 1.55fr 1fr; gap:10px}
-    .paper,.insights,.controls,.topbar{padding:10px}
-    .rowBox{margin-bottom:8px;padding:8px}
-    table{border-spacing:0 8px}
-    .kpi .val{font-size:22px}
-    .insTitle{font-size:18px}
-    .notes textarea{min-height:80px}
-    .rowBox, .kpi, .callout, .bigBox, .totalBar{break-inside: avoid; page-break-inside: avoid;}
-    *{print-color-adjust:exact; -webkit-print-color-adjust:exact;}
-  }
+textarea{
+  width:100%;
+  height:240px;
+  border-radius:12px;
+  background:#000;
+  color:#fff;
+  padding:15px;
+}
 </style>
 </head>
 
 <body>
 <div class="wrap">
-  <div class="card">
-    <div class="topbar">
-      <div class="brand">
-<img src="./fossil-logo.png" alt="Fossil" />
-        <div>
-          <div class="t">Weekly Outreach Sheet</div>
-          <div class="s">Weekly Sheet • Week Selector (Auto-Save) • Auto Date Sync • Quick Entry</div>
-        </div>
-      </div>
+<div class="card">
 
-     <div class="actions" id="nav">
-  <span class="pill"><span class="dot brass"></span>Goal: <b id="uiGoal">6.4%</b></span>
-  <span class="pill"><span class="dot" id="uiStatusDot"></span>Status: <b id="uiStatus">—</b></span>
+<img src="./fossil-logo.png" height="40">
+<div style="margin-top:10px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;">
 
-  <!-- ✅ PAGE TABS -->
-  <a class="btn" href="./index.html">Page 1</a>
-  <a class="btn primary" href="./sheet.html">Page 2</a>
-  <a class="btn" href="./leaderboard.html">Page 3</a>
-<a class="btn" href="./email.html">Page 4</a>
-<a href="./outreaches.html">Page 5</a>
-  <!-- ✅ PAGE 2 ACTIONS -->
-  <button class="btn primary" id="btnSave">Save</button>
-  <button class="btn" id="btnLoad">Load week</button>
-  <button class="btn" id="btnCSV">CSV</button>
-<button class="btn" type="button" onclick="window.print()">Print</button>
-  <button class="btn danger" id="btnReset">Reset week</button>
+  <a href="./index.html" class="btn">Page 1</a>
+  <a href="./sheet.html" class="btn">Page 2</a>
+  <a href="./leaderboard.html" class="btn">Page 3</a>
+  <a href="./email.html" class="btn">Page 4</a>
+  <a href="./page5.html" class="btn active">Page 5</a>
+
 </div>
-    </div>
 
-    <div class="controls">
-      <div class="field">
-        <label>Year</label>
-        <select id="inYear"></select>
-      </div>
+<h2>Outreach Generator</h2>
 
-      <div class="field">
-        <label>Week #</label>
-        <select id="inWeek"></select>
-      </div>
+<!-- OCCASION -->
+<div class="section">
+<select id="occasion">
+<option value="">No Occasion</option>
+<option>Canada Day</option>
+<option>BC Day</option>
+<option>Thanksgiving</option>
+<option>Christmas</option>
+<option>New Year</option>
+<option>Valentine’s Day</option>
+<option>Father’s Day</option>
+<option>Mother’s Day</option>
+<option>Black Friday</option>
+<option>Boxing Day</option>
+<option>Holiday Season</option>
+</select>
+</div>
 
-      <div class="field">
-        <label>Weekly goal %</label>
-        <input id="inGoal" type="text" inputmode="decimal" placeholder="6.4" value="6.4" />
-      </div>
+<!-- DISCOUNT -->
+<div class="section" id="discounts"></div>
 
-      <div class="field">
-        <label>Week start date</label>
-        <input id="inStart" type="date" />
-      </div>
+<!-- PRODUCTS -->
+<div class="grid">
 
-      <div class="field">
-        <label>Week end date</label>
-        <input id="inEnd" type="date" />
-      </div>
+<div class="products">
+<b>WATCHES</b>
+<label><input type="checkbox" value="watch"> Watch</label>
+<label><input type="checkbox" value="leather watch"> Leather Watch</label>
+<label><input type="checkbox" value="gold watch"> Gold Watch</label>
+<label><input type="checkbox" value="automatic watch"> Automatic</label>
+<label><input type="checkbox" value="classic watch"> Classic</label>
+<label><input type="checkbox" value="bracelet watch"> Bracelet Watch</label>
+</div>
 
-      <!-- ✅ UPDATED: replace ONLY this field -->
-      <div class="field">
-        <label>Top Contributor #1</label>
-        <input id="inTop1" placeholder="Name..." />
-      </div>
+<div class="products">
+<b>BAGS</b>
+<label><input type="checkbox" value="bag"> Bag</label>
+<label><input type="checkbox" value="backpack"> Backpack</label>
+<label><input type="checkbox" value="work bag"> Work Bag</label>
+<label><input type="checkbox" value="travel bag"> Travel Bag</label>
+<label><input type="checkbox" value="crossbody bag"> Crossbody</label>
+<label><input type="checkbox" value="tote bag"> Tote</label>
+<label><input type="checkbox" value="shoulder bag"> Shoulder</label>
+</div>
 
-      <div class="field">
-        <label>Top Contributor #2</label>
-        <input id="inTop2" placeholder="Name..." />
-      </div>
+<div class="products">
+<b>WALLETS</b>
+<label><input type="checkbox" value="wallet"> Wallet</label>
+<label><input type="checkbox" value="bifold wallet"> Bifold</label>
+<label><input type="checkbox" value="trifold wallet"> Trifold</label>
+<label><input type="checkbox" value="card case"> Card Case</label>
+</div>
 
-      <div class="field">
-        <label>Top Contributor #3</label>
-        <input id="inTop3" placeholder="Name..." />
-      </div>
-    </div>
+<div class="products">
+<b>JEWELLERY</b>
+<label><input type="checkbox" value="jewellery"> Jewellery</label>
+<label><input type="checkbox" value="bracelet"> Bracelet</label>
+<label><input type="checkbox" value="necklace"> Necklace</label>
+<label><input type="checkbox" value="ring"> Ring</label>
+</div>
 
-    <div class="grid">
-      <!-- LEFT -->
-      <div class="paper">
-        <div class="paperTitle">
-          <div>
-            <div class="h">Weekly Outreach Goal → <span id="uiGoal2">6.4%</span> of Traffic</div>
-            <div class="sub">7 days • totals auto-calc • outreach% auto-calc • responses tracked</div>
-          </div>
-          <div class="sub mono" id="uiWeekLabel">—</div>
-        </div>
+<div class="products">
+<b>ACCESSORIES</b>
+<label><input type="checkbox" value="belt"> Belt</label>
+<label><input type="checkbox" value="sunglasses"> Sunglasses</label>
+</div>
 
-        <div class="rule"></div>
+<div class="products">
+<b>OPTIONS</b>
+<label><input type="checkbox" id="remoteCart"> Remote Cart</label>
+</div>
 
-        <table>
-          <thead>
-            <tr>
-              <th style="width:160px">Date</th>
-              <th>Store traffic</th>
-              <th>Outreach messages sent</th>
-              <th style="width:180px">Outreach %</th>
-              <th>Engagement / Responses</th>
-            </tr>
-          </thead>
-        </table>
+</div>
 
-        <div id="rows"></div>
+<br>
 
-        <div class="totalBar">
-          <div>
-            <div class="muted">Total (week)</div>
-            <div class="big">
-              Traffic <span class="mono" id="tTraffic">0</span> • Outreach <span class="mono" id="tOutreach">0</span> • Responses <span class="mono" id="tResp">0</span>
-            </div>
-          </div>
-          <div>
-            <div class="muted">Weekly outreach %</div>
-            <div class="big mono" id="tPct">0.0%</div>
-          </div>
-        </div>
+<button onclick="generate()">Generate Message</button>
+<button onclick="copyMsg()">Copy</button>
 
-        <div class="notes">
-          <div class="notesGrid">
-            <div>
-              <label>Best Customer Moment</label>
-              <input id="inMoment" placeholder="Type here..." />
-            </div>
-            <div>
-              <label>Weekly Insight</label>
-              <input id="inInsight" placeholder="Type here..." />
-            </div>
-          </div>
-          <div style="margin-top:12px">
-            <label>Next Week Focus</label>
-            <textarea id="inFocus" placeholder="Type here..."></textarea>
-          </div>
-        </div>
-      </div>
+<textarea id="output"></textarea>
 
-      <!-- RIGHT -->
-      <div class="insights">
-        <div class="insTitle">Weekly Insights (Auto)</div>
-
-        <div class="kpiGrid">
-          <div class="kpi">
-            <div class="lab">Weekly outreach</div>
-            <div class="val" id="kpiOutreach">0 / 0 = 0.0%</div>
-            <div class="hint mono" id="kpiGoalHint">Goal 6.4%</div>
-          </div>
-          <div class="kpi">
-            <div class="lab">Engagement rate</div>
-            <div class="val" id="kpiEng">0.0%</div>
-            <div class="hint">Responses ÷ outreach</div>
-          </div>
-        </div>
-
-        <div class="callout" id="callout"></div>
-
-        <div class="bigBox">
-          <div class="summaryLines" id="summary"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 </div>
 
 <script>
-/** STORAGE */
-const ROOT = "fossil_weekly_v2";
-function weekKey(year, week){ return `${ROOT}::${year}::${week}`; }
-function loadAll(){ try { return JSON.parse(localStorage.getItem(ROOT) || "{}"); } catch { return {}; } }
-function saveAll(obj){ localStorage.setItem(ROOT, JSON.stringify(obj)); }
-function getWeekData(year, week){ return loadAll()[weekKey(year,week)] || null; }
-function setWeekData(year, week, data){
-  const all = loadAll();
-  all[weekKey(year,week)] = data;
-  saveAll(all);
-}
+let selectedDiscount="";
 
-/** WEEK SCHEDULE RULE */
-function lastSundayOfJanuary(year){
-  const d = new Date(Date.UTC(year, 0, 31));
-  while (d.getUTCDay() !== 0) d.setUTCDate(d.getUTCDate()-1);
-  return d;
-}
-function weekStartFromYearWeek(year, week){
-  const anchor = lastSundayOfJanuary(year);
-  const start = new Date(anchor);
-  start.setUTCDate(start.getUTCDate() + (Number(week)-1)*7);
-  return start;
-}
-function addDaysUTC(d, n){ const x = new Date(d); x.setUTCDate(x.getUTCDate()+n); return x; }
-function fmtISO(d){
-  const y=d.getUTCFullYear();
-  const m=String(d.getUTCMonth()+1).padStart(2,"0");
-  const da=String(d.getUTCDate()).padStart(2,"0");
-  return `${y}-${m}-${da}`;
-}
-function parseISO(s){
-  const [y,m,d] = (s||"").split("-").map(Number);
-  if(!y||!m||!d) return null;
-  return new Date(Date.UTC(y,m-1,d));
-}
-function startToYearWeek_custom(startISO, year){
-  const d = parseISO(startISO);
-  if(!d) return null;
-  const snap = new Date(d);
-  while (snap.getUTCDay() !== 0) snap.setUTCDate(snap.getUTCDate()-1);
-
-  const anchor = lastSundayOfJanuary(year);
-  const diffDays = Math.round((snap - anchor) / 86400000);
-  const w = Math.floor(diffDays / 7) + 1;
-  return { week: Math.max(1, w), snappedStart: fmtISO(snap) };
-}
-
-/** NUM INPUT FIX */
-function onlyNum(el){
-  el.addEventListener("input", ()=>{ el.value = el.value.replace(/[^\d]/g,""); });
-  el.addEventListener("focus", ()=>el.select());
-}
-function onlyDec(el){
-  el.addEventListener("input", ()=>{ el.value = el.value.replace(/[^\d.]/g,"").replace(/(\..*)\./g,"$1"); });
-  el.addEventListener("focus", ()=>el.select());
-}
-function numVal(el){ return Number((el.value || "0").toString().replace(/[^\d.]/g,"")) || 0; }
-
-/** UI */
-const inYear = document.getElementById("inYear");
-const inWeek = document.getElementById("inWeek");
-const inGoal = document.getElementById("inGoal");
-const inStart = document.getElementById("inStart");
-const inEnd = document.getElementById("inEnd");
-
-/* ✅ UPDATED ids */
-const inTop1 = document.getElementById("inTop1");
-const inTop2 = document.getElementById("inTop2");
-const inTop3 = document.getElementById("inTop3");
-
-const uiGoal = document.getElementById("uiGoal");
-const uiGoal2 = document.getElementById("uiGoal2");
-const uiWeekLabel = document.getElementById("uiWeekLabel");
-const uiStatus = document.getElementById("uiStatus");
-const uiStatusDot = document.getElementById("uiStatusDot");
-
-const rowsEl = document.getElementById("rows");
-
-const tTraffic = document.getElementById("tTraffic");
-const tOutreach = document.getElementById("tOutreach");
-const tResp = document.getElementById("tResp");
-const tPct = document.getElementById("tPct");
-
-const kpiOutreach = document.getElementById("kpiOutreach");
-const kpiGoalHint = document.getElementById("kpiGoalHint");
-const kpiEng = document.getElementById("kpiEng");
-const callout = document.getElementById("callout");
-const summary = document.getElementById("summary");
-
-const inMoment = document.getElementById("inMoment");
-const inInsight = document.getElementById("inInsight");
-const inFocus = document.getElementById("inFocus");
-
-document.getElementById("btnSave").addEventListener("click", saveWeek);
-document.getElementById("btnLoad").addEventListener("click", loadWeek);
-document.getElementById("btnReset").addEventListener("click", ()=>resetWeek(true));
-document.getElementById("btnCSV").addEventListener("click", exportCSV);
-
-onlyDec(inGoal);
-
-function buildYearWeek(){
-  const nowY = new Date().getFullYear();
-  const years = [nowY-1, nowY, nowY+1, nowY+2];
-  inYear.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join("");
-  const weeks = Array.from({length:60}, (_,i)=>i+1);
-  inWeek.innerHTML = weeks.map(w=>`<option value="${w}">${w}</option>`).join("");
-}
-
-function makeRow(){
-  const box = document.createElement("div");
-  box.className = "rowBox";
-  box.innerHTML = `
-    <div class="cellGrid">
-      <input class="d" type="date" />
-      <input class="t" type="text" inputmode="numeric" placeholder="0" />
-      <input class="o" type="text" inputmode="numeric" placeholder="0" />
-      <div class="pct bad mono">0.0%</div>
-      <input class="r" type="text" inputmode="numeric" placeholder="0" />
-    </div>
-  `;
-
-  onlyNum(box.querySelector(".t"));
-  onlyNum(box.querySelector(".o"));
-  onlyNum(box.querySelector(".r"));
-
-  box.querySelectorAll("input").forEach(inp=>{
-    inp.addEventListener("input", recalc);
-    inp.addEventListener("change", recalc);
-  });
-
-  rowsEl.appendChild(box);
-}
-function ensure7Rows(){
-  rowsEl.innerHTML = "";
-  for(let i=0;i<7;i++) makeRow();
-}
-
-function setDatesFromWeek(){
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-  const start = weekStartFromYearWeek(year, week);
-  const end = addDaysUTC(start, 6);
-
-  inStart.value = fmtISO(start);
-  inEnd.value = fmtISO(end);
-
-  const rowDates = Array.from(rowsEl.querySelectorAll(".rowBox .d"));
-  rowDates.forEach((dInp, idx)=> dInp.value = fmtISO(addDaysUTC(start, idx)));
-
-  uiWeekLabel.textContent = `Week ${week} (${year}) — ${fmtISO(start)} to ${fmtISO(end)}`;
-}
-
-function setWeekFromStartDate(){
-  const year = Number(inYear.value);
-  const startISO = inStart.value;
-  const res = startToYearWeek_custom(startISO, year);
-  if(!res) return;
-
-  inWeek.value = String(res.week);
-  inStart.value = res.snappedStart;
-
-  const start = parseISO(res.snappedStart);
-  const end = addDaysUTC(start, 6);
-  inEnd.value = fmtISO(end);
-
-  const rowDates = Array.from(rowsEl.querySelectorAll(".rowBox .d"));
-  rowDates.forEach((dInp, idx)=> dInp.value = fmtISO(addDaysUTC(start, idx)));
-
-  uiWeekLabel.textContent = `Week ${res.week} (${year}) — ${inStart.value} to ${inEnd.value}`;
-}
-
-function readNumbers(){
-  return Array.from(rowsEl.querySelectorAll(".rowBox")).map(box=>({
-    traffic: numVal(box.querySelector(".t")),
-    outreach: numVal(box.querySelector(".o")),
-    resp: numVal(box.querySelector(".r"))
-  }));
-}
-function writeNumbers(nums){
-  const boxes = Array.from(rowsEl.querySelectorAll(".rowBox"));
-  boxes.forEach((box,i)=>{
-    const n = nums?.[i] || {traffic:0,outreach:0,resp:0};
-    box.querySelector(".t").value = String(n.traffic ?? 0);
-    box.querySelector(".o").value = String(n.outreach ?? 0);
-    box.querySelector(".r").value = String(n.resp ?? 0);
-  });
-}
-
-function pct(a,b){ return b ? (a/b)*100 : 0; }
-function fmt1(n){ return (Number(n)||0).toFixed(1); }
-function fmtInt(n){ return String(Math.round(Number(n)||0)); }
-
-function recalc(){
-  const goal = numVal(inGoal) || 6.4;
-  uiGoal.textContent = `${fmt1(goal)}%`;
-  uiGoal2.textContent = `${fmt1(goal)}%`;
-  kpiGoalHint.textContent = `Goal ${fmt1(goal)}%`;
-
-  const nums = readNumbers();
-
-  rowsEl.querySelectorAll(".rowBox").forEach((box, i)=>{
-    const n = nums[i];
-    const p = pct(n.outreach, n.traffic);
-    const pill = box.querySelector(".pct");
-    pill.textContent = `${fmt1(p)}%`;
-    pill.classList.remove("good","warn","bad");
-    if(p >= goal) pill.classList.add("good");
-    else if(p >= goal*0.8) pill.classList.add("warn");
-    else pill.classList.add("bad");
-  });
-
-  const totalTraffic = nums.reduce((s,n)=>s+n.traffic,0);
-  const totalOutreach = nums.reduce((s,n)=>s+n.outreach,0);
-  const totalResp = nums.reduce((s,n)=>s+n.resp,0);
-
-  const weeklyPct = pct(totalOutreach, totalTraffic);
-  const engPct = pct(totalResp, totalOutreach);
-
-  tTraffic.textContent = fmtInt(totalTraffic);
-  tOutreach.textContent = fmtInt(totalOutreach);
-  tResp.textContent = fmtInt(totalResp);
-  tPct.textContent = `${fmt1(weeklyPct)}%`;
-
-  kpiOutreach.textContent = `${fmtInt(totalOutreach)} / ${fmtInt(totalTraffic)} = ${fmt1(weeklyPct)}%`;
-  kpiEng.textContent = `${fmt1(engPct)}%`;
-
-  const status = weeklyPct >= goal ? "On Track" : (weeklyPct >= goal*0.8 ? "Close" : "Behind");
-  uiStatus.textContent = status;
-  uiStatusDot.className = "dot " + (status==="On Track" ? "good" : status==="Close" ? "warn" : "bad");
-
-  const dates = Array.from(rowsEl.querySelectorAll(".rowBox .d")).map(x=>x.value || "—");
-  let best = {p:-1, date:"—"}, worst = {p:999, date:"—"};
-  nums.forEach((n,i)=>{
-    const p = pct(n.outreach,n.traffic);
-    if(p > best.p) best = {p, date: dates[i]};
-    if(p < worst.p) worst = {p, date: dates[i]};
-  });
-
-  const ok = weeklyPct >= goal;
-  const close = (!ok && weeklyPct >= goal*0.8);
-  const statusIcon = ok ? "✅" : "⚠️";
-  const statusLine = ok
-    ? "Goal met — keep it steady across all shifts."
-    : "Goal not met — keep outreach steady across all shifts.";
-  const statusClass = ok ? "c-good" : (close ? "c-warn" : "c-bad");
-
-  callout.innerHTML = `
-    <div class="miniGrid">
-      <div class="miniItem c-pin">
-        <div class="miniIcon">📌</div>
-        <div class="miniText">Weekly outreach: ${fmt1(weeklyPct)}% (Goal ${fmt1(goal)}%)</div>
-      </div>
-
-      <div class="miniItem ${statusClass}">
-        <div class="miniIcon">${statusIcon}</div>
-        <div class="miniText">${statusLine}</div>
-      </div>
-
-      <div class="miniItem c-info">
-        <div class="miniIcon">💬</div>
-        <div class="miniText">Engagement: ${fmt1(engPct)}% (responses/outreach)</div>
-      </div>
-
-      <div class="miniItem c-info">
-        <div class="miniIcon">🏆</div>
-        <div class="miniText">Best day: ${best.date} → ${fmt1(best.p)}%</div>
-      </div>
-
-      <div class="miniItem c-info">
-        <div class="miniIcon">👀</div>
-        <div class="miniText">Watch-out day: ${worst.date} → ${fmt1(worst.p)}%</div>
-      </div>
-    </div>
-  `;
-
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-
-  /* ✅ UPDATED: bottom summary shows the 3 names */
-  summary.innerHTML = `
-    <div class="row">Week <b>${week}</b> (${year}) — <span class="mono">${inStart.value}</span> to <span class="mono">${inEnd.value}</span></div>
-    <div class="row">Traffic <b>${fmtInt(totalTraffic)}</b>, Outreach <b>${fmtInt(totalOutreach)}</b> = <b>${fmt1(weeklyPct)}%</b> (Goal <b>${fmt1(goal)}%</b>), Responses <b>${fmtInt(totalResp)}</b></div>
-    <div class="row">🏆 Top Contributor #1: <b>${(inTop1.value||"—").trim() || "—"}</b></div>
-    <div class="row">🥈 Top Contributor #2: <b>${(inTop2.value||"—").trim() || "—"}</b></div>
-    <div class="row">🥉 Top Contributor #3: <b>${(inTop3.value||"—").trim() || "—"}</b></div>
-  `;
-}
-
-/** SAVE/LOAD — dates are NOT saved */
-function collectWeek(){
-  return {
-    goal: numVal(inGoal) || 6.4,
-    top1: inTop1.value || "",
-    top2: inTop2.value || "",
-    top3: inTop3.value || "",
-    bestMoment: inMoment.value || "",
-    weeklyInsight: inInsight.value || "",
-    nextFocus: inFocus.value || "",
-    numbers: readNumbers()
+const discWrap=document.getElementById("discounts");
+[10,20,30,40,50,60,70,80].forEach(d=>{
+  const b=document.createElement("button");
+  b.textContent=d+"%";
+  b.className="btn";
+  b.onclick=()=>{
+    selectedDiscount=d;
+    document.querySelectorAll(".btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
   };
-}
-function applyWeek(data){
-  if(!data) return;
-  inGoal.value = String(data.goal ?? 6.4);
-  inTop1.value = data.top1 || "";
-  inTop2.value = data.top2 || "";
-  inTop3.value = data.top3 || "";
-  inMoment.value = data.bestMoment || "";
-  inInsight.value = data.weeklyInsight || "";
-  inFocus.value = data.nextFocus || "";
-  writeNumbers(data.numbers || []);
-  recalc();
-}
-function saveWeek(){
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-  setWeekData(year, week, collectWeek());
-
-  const old = uiStatus.textContent;
-  uiStatus.textContent = "Saved ✓";
-  setTimeout(()=>{ uiStatus.textContent = old; }, 700);
-}
-function loadWeek(){
-  setDatesFromWeek();
-
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-  const data = getWeekData(year, week);
-
-  if(data) applyWeek(data);
-  else resetWeek(false);
-}
-function resetWeek(confirmAsk=true){
-  if(confirmAsk && !confirm("Reset this week values?")) return;
-
-  setDatesFromWeek();
-  writeNumbers(Array.from({length:7}, ()=>({traffic:0,outreach:0,resp:0})));
-
-  inTop1.value = "";
-  inTop2.value = "";
-  inTop3.value = "";
-  inMoment.value = "";
-  inInsight.value = "";
-  inFocus.value = "";
-  recalc();
-}
-
-/** CSV */
-function exportCSV(){
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-  const goal = numVal(inGoal) || 6.4;
-  const dates = Array.from(rowsEl.querySelectorAll(".rowBox .d")).map(x=>x.value || "");
-  const nums = readNumbers();
-
-  const header = ["Year","Week","Date","Traffic","Outreach","OutreachPct","Responses","GoalPct"];
-  const lines = [header.join(",")];
-
-  nums.forEach((n,i)=>{
-    lines.push([
-      year, week, dates[i],
-      n.traffic, n.outreach,
-      fmt1(pct(n.outreach,n.traffic)),
-      n.resp,
-      fmt1(goal)
-    ].join(","));
-  });
-
-  const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `Fossil_Weekly_Outreach_${year}_W${week}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-/** Week changes */
-function onWeekChange(){ loadWeek(); }
-inYear.addEventListener("change", onWeekChange);
-inWeek.addEventListener("change", onWeekChange);
-inGoal.addEventListener("input", recalc);
-
-/* ✅ autosave when top names change too */
-[inTop1, inTop2, inTop3].forEach(el => el.addEventListener("input", recalc));
-
-/* start-date change updates week + end + rows + loads saved data */
-inStart.addEventListener("change", ()=>{
-  setWeekFromStartDate();
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-  const data = getWeekData(year, week);
-  if(data) applyWeek(data);
-  else resetWeek(false);
-});
-inEnd.addEventListener("change", ()=>{
-  setWeekFromStartDate();
-  const year = Number(inYear.value);
-  const week = Number(inWeek.value);
-  const data = getWeekData(year, week);
-  if(data) applyWeek(data);
-  else resetWeek(false);
+  discWrap.appendChild(b);
 });
 
-function init(){
-  buildYearWeek();
-  ensure7Rows();
-
-  const now = new Date();
-  inYear.value = String(now.getFullYear());
-  inWeek.value = "4";
-  loadWeek();
-  recalc();
-}
-document.addEventListener("DOMContentLoaded", init);
-
-// ✅ AUTO-SAVE (no need to press Save)
-let __autosaveTimer = null;
-
-function autosaveSoon(){
-  clearTimeout(__autosaveTimer);
-  __autosaveTimer = setTimeout(()=> {
-    const year = Number(inYear.value);
-    const week = Number(inWeek.value);
-    setWeekData(year, week, collectWeek());
-  }, 250);
+function rand(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
 }
 
-// trigger autosave when anything changes
-document.addEventListener("input", (e)=>{
-  if(e.target.closest("button,a")) return;
-  autosaveSoon();
-});
-document.addEventListener("change", (e)=>{
-  if(e.target.closest("button,a")) return;
-  autosaveSoon();
-});
+function generate(){
+
+  const occ=document.getElementById("occasion").value;
+  const remote=document.getElementById("remoteCart").checked;
+
+  const prods=[...document.querySelectorAll("input[type=checkbox]:checked")]
+    .map(x=>x.value)
+    .filter(x=>x);
+
+  let productText="";
+  if(prods.length===1) productText=prods[0];
+  else if(prods.length>1){
+    productText=prods.slice(0,-1).join(", ")+" and "+prods.slice(-1);
+  }
+
+  let msg="Hi X,\n\n";
+
+  const occMsg={
+    "Canada Day":[
+      "Happy Canada Day 🇨🇦 hope you're having a great one 🙂",
+      "Hope you're enjoying Canada Day 🇨🇦 today!"
+    ],
+    "BC Day":[
+      "Hope you're enjoying the BC Day long weekend 🌲🙂",
+      "Happy BC Day 🌲 enjoy the long weekend!"
+    ],
+    "Christmas":[
+      "Merry Christmas 🎄 hope you're having a beautiful time 🙂"
+    ]
+  };
+
+  if(occMsg[occ]) msg+=rand(occMsg[occ])+"\n\n";
+
+  if(productText){
+    msg+=rand([
+      `Just wanted to check in — how are you liking your ${productText} so far? 😊`,
+      `Hey! how’s your ${productText} been so far?`,
+      `Quick check — are you enjoying your ${productText}? 🙂`
+    ])+"\n\n";
+  }
+
+  msg+=rand([
+    "We just got some new arrivals in store that would go really well with your style.",
+    "We’ve received some fresh pieces that would complement your recent pick nicely."
+  ])+"\n\n";
+
+  if(selectedDiscount){
+    msg+=rand([
+      `We currently have ${selectedDiscount}% off on select styles.`,
+      `${selectedDiscount}% offer is running on some great pieces right now.`
+    ])+"\n\n";
+  }
+
+  if(remote){
+    msg+="Also just letting you know — you can shop directly through us using our remote cart.\n";
+    msg+="You can call us and we can place the order for you right away, and you’ll get outlet store pricing instead of full price.\n";
+    msg+="We can also ship it directly to your home 🙂\n\n";
+  }
+
+  msg+=rand([
+    "No pressure at all — just thought I’d share 🙂",
+    "Just thought I’d let you know — no rush at all 🙂"
+  ]);
+
+  document.getElementById("output").value=msg;
+}
+
+function copyMsg(){
+  const txt=document.getElementById("output");
+  txt.select();
+  document.execCommand("copy");
+}
 </script>
 
-</body>
-</html>
-<script>
-(function lockNav(){
-  const nav = document.getElementById("nav");
-  if(!nav) return;
-  nav.querySelectorAll("a.btn").forEach(a => a.setAttribute("target","_self"));
-})();
-</script>
 </body>
 </html>
