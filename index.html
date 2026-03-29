@@ -35,15 +35,12 @@
     font-family:var(--sans);
     color:var(--text);
     background:
-      radial-gradient(circle at 20% 10%, rgba(200,164,90,.14), transparent 55%),
-      radial-gradient(circle at 80% 70%, rgba(209,75,75,.10), transparent 55%),
-      linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.88)),
-      url("./store-bg.PNG") center/cover no-repeat fixed;
+url("./store-bg.PNG") center/cover no-repeat fixed;
   }
 
   .wrap{max-width:1200px;margin:0 auto;padding:18px}
   .card{
-    background: rgba(18,18,22,.78);
+background: transparent;
     border:1px solid var(--line);
     border-radius:20px;
     box-shadow:var(--shadow);
@@ -53,7 +50,7 @@
   .topbar{
     display:flex;align-items:center;justify-content:space-between;gap:14px;
     padding:14px 16px;
-    background: rgba(0,0,0,.22);
+background: rgba(0,0,0,.95);
     border-bottom:1px solid rgba(255,255,255,.10);
   }
   .brand{display:flex;align-items:center;gap:12px;min-width:260px}
@@ -104,8 +101,31 @@
   }
   @media (max-width: 980px){ .controls{grid-template-columns:1fr} }
 
-  .field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px;font-weight:900}
-  input,select{
+.field label{
+  display:inline-block;   /* important for box */
+
+  font-size:16px;
+  font-weight:1000;
+
+  color:#ffd700;   /* bright gold */
+
+  /* thin dark border */
+  -webkit-text-stroke: 0.6px #000;
+
+  /* clean edge */
+  text-shadow:
+    0 1px 1px rgba(0,0,0,.9);
+
+  /* 🔥 SMALL BLACK BOX */
+  background: rgba(0,0,0,.65);
+  padding:4px 10px;
+  border-radius:8px;
+
+  /* subtle gold border */
+  border:1px solid rgba(255,215,0,.4);
+
+  margin-bottom:6px;
+}  input,select{
     width:100%;
     padding:12px 12px;
     border-radius:14px;
@@ -138,13 +158,56 @@
     font-size:12.5px;
   }
   .chip{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:8px 12px;
-    border-radius:999px;
-    background: rgba(0,0,0,.25);
-    border:1px solid rgba(255,255,255,.10);
-    backdrop-filter: blur(6px);
-  }
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+
+  /* DARK like top */
+  background: rgba(0,0,0,.75);
+
+  /* gold border */
+  border:1px solid rgba(200,164,90,.5);
+
+  /* GOLD TEXT */
+  color:#f2dfa8;
+  font-weight:800;
+
+  backdrop-filter: blur(6px);
+}
+<script>
+(function lockNav(){
+  const nav = document.getElementById("nav");
+  if(!nav) return;
+  nav.querySelectorAll("a.btn").forEach(a => a.setAttribute("target","_self"));
+})();
+/* ===== MAKE CONTROL BOXES SAME DARK AS TOP ===== */
+
+.controls{
+  background: rgba(0,0,0,.60);
+  border-radius:16px;
+}
+
+input, select{
+  background: rgba(0,0,0,.80);
+  border:1px solid rgba(200,164,90,.5);
+  color:#f2dfa8;
+  font-weight:700;
+}
+
+.field label{
+  color:#c8a45a;
+  font-weight:1000;
+}
+
+#btnRefresh{
+  background: rgba(0,0,0,.80);
+  border:1px solid rgba(200,164,90,.5);
+  color:#f2dfa8;
+  font-weight:800;
+}
+</script>
 </style>
 </head>
 
@@ -157,7 +220,7 @@
         <img src="./fossil-logo.PNG" alt="Fossil" />
         <div>
           <div class="t">Fossil 5976</div>
-          <div class="s">Outreach % dial • Goal status • Traffic + Replies</div>
+<div class="s">Client Outreach Engine • Goal Performance • Engagement Analytics</div>
         </div>
       </div>
 
@@ -165,11 +228,11 @@
   <span class="pill"><span class="dot gold"></span>Goal: <b id="uiGoal">6.4%</b></span>
   <span class="pill"><span class="dot" id="uiStatusDot"></span>Status: <b id="uiStatus">—</b></span>
 
-  <a class="btn" href="./index.html">Page 1</a>
-  <a class="btn" href="./sheet.html">Page 2</a>
-  <a class="btn" href="./leaderboard.html">Page 3</a>
- <a class="btn" href="./email.html">Page 4</a>
-<a class="btn" href="./outreach.html">Page 5</a>
+<a class="btn" href="./index.html">Dashboard</a>
+<a class="btn" href="./sheet.html">Weekly Entry</a>
+<a class="btn" href="./leaderboard.html">Leaderboard</a>
+<a class="btn" href="./email.html">Email Automation</a>
+<a class="btn" href="./outreach.html">Clienteling Generator</a>
   <a class="btn" href="./print.html">Print</a>
 </div>
       </div>
@@ -615,13 +678,7 @@ inGoal.addEventListener("input", loadJourney);
 window.addEventListener("focus", loadJourney);
 setInterval(loadJourney, 500);
 </script>
-<script>
-(function lockNav(){
-  const nav = document.getElementById("nav");
-  if(!nav) return;
-  nav.querySelectorAll("a.btn").forEach(a => a.setAttribute("target","_self"));
-})();
-</script>
+
 <script>
 (function lockNav(){
   const nav = document.getElementById("nav");
@@ -631,3 +688,4 @@ setInterval(loadJourney, 500);
 </script>
 </body>
 
+	
