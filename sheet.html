@@ -373,6 +373,107 @@ grid-template-columns: repeat(5, auto);    gap:12px;
   .notesGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width: 900px){ .notesGrid{grid-template-columns:1fr} }
   .notes label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px;font-weight:900}
+.managerAccess{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.accessBox{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:6px;
+
+  border-radius:16px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.08),
+    rgba(255,255,255,.03)
+  );
+
+  border:1px solid rgba(255,255,255,.12);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.lockIcon{
+  width:38px;
+  height:38px;
+
+  border-radius:12px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background: rgba(200,164,90,.14);
+
+  border:1px solid rgba(200,164,90,.28);
+
+  font-size:16px;
+}
+
+#managerKey{
+  width:180px;
+
+  border:none;
+  outline:none;
+
+  background:transparent;
+
+  color:var(--text);
+
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.3px;
+
+  padding:10px 4px;
+}
+
+#managerKey::placeholder{
+  color:rgba(255,255,255,.42);
+  font-weight:600;
+}
+
+#unlockBtn{
+  cursor:pointer;
+
+  border:none;
+
+  height:40px;
+
+  padding:0 16px;
+
+  border-radius:12px;
+
+  background: linear-gradient(
+    180deg,
+    #d8b46a,
+    #b89044
+  );
+
+  color:#111;
+
+  font-weight:1000;
+  font-size:12px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+
+  transition:.18s ease;
+}
+
+#unlockBtn:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+}
 
   /* ===== PRINT: force ONE PAGE (landscape) ===== */
   @media print{
@@ -431,7 +532,33 @@ grid-template-columns: repeat(5, auto);    gap:12px;
   <a class="btn" href="./outreach.html">Clienteling Generator</a>
 
   <button class="btn" type="button" onclick="window.print()">Print</button>
+<button class="btn" type="button" onclick="window.print()">Print</button>
 
+<div class="managerAccess">
+
+  <div class="pill" id="rolePill">
+    <span class="dot warn"></span>
+    <b>Employee View</b>
+  </div>
+
+  <div class="accessBox">
+
+    <div class="lockIcon">🔒</div>
+
+    <input
+      type="password"
+      id="managerKey"
+      placeholder="Manager Access Key"
+      autocomplete="off"
+    >
+
+    <button id="unlockBtn">
+      Unlock
+    </button>
+
+  </div>
+
+</div>
 
 </div>
     </div>
@@ -1018,5 +1145,84 @@ document.addEventListener("change", (e)=>{
   nav.querySelectorAll("a.btn").forEach(a => a.setAttribute("target","_self"));
 })();
 </script>
+<script>
+/* =========================
+   MANAGER ACCESS SYSTEM
+========================= */
+
+const MANAGER_PASSWORD = "1954";
+
+function setLockedState(locked){
+
+  document
+    .querySelectorAll("input, textarea, select")
+    .forEach(el => {
+
+      if(el.id === "managerKey") return;
+
+      el.disabled = locked;
+    });
+
+  const rolePill = document.getElementById("rolePill");
+
+  if(locked){
+
+    rolePill.innerHTML = `
+      <span class="dot warn"></span>
+      <b>Employee View</b>
+    `;
+
+  }else{
+
+    rolePill.innerHTML = `
+      <span class="dot good"></span>
+      <b>Manager Mode</b>
+    `;
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  setLockedState(true);
+
+});
+
+function unlockManager(){
+
+  const key = document.getElementById("managerKey");
+
+  if(!key) return;
+
+  if(key.value === MANAGER_PASSWORD){
+
+    setLockedState(false);
+
+    key.value = "";
+
+  }else{
+
+    setLockedState(true);
+
+    alert("Incorrect Password");
+
+    key.value = "";
+  }
+}
+
+document
+  .getElementById("unlockBtn")
+  .addEventListener("click", unlockManager);
+
+document
+  .getElementById("managerKey")
+  .addEventListener("keydown", (e) => {
+
+    if(e.key === "Enter"){
+
+      unlockManager();
+    }
+});
+</script>
 </body>
 </html>
+
